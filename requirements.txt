@@ -16,3 +16,9 @@ mock
 gevent
 gunicorn
 ipdb
+
+
+# ----------------------
+# RayGun
+# ----------------------
+raygun4py

@@ -1,11 +1,14 @@
 #!/usr/bin/env python2
 
+import os
 from flask import Flask, request
 from messenger.api import MessengerApi
 from prayer import PrayerWebhook as webhook
+from raygun4py.middleware import flask
 
 app = Flask(__name__)
 api = MessengerApi()
+flask.Provider(app, os.environ.get('RAYGUN_APIKEY')).attach()
 
 ###
 # Routing for your application.
