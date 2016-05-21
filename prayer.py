@@ -84,4 +84,3 @@ def transform_intention(intention):
             }
         ]
     }
-        

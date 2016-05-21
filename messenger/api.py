@@ -26,4 +26,3 @@ class MessengerApi:
         if response_data != '':
             print("  body: " + response_data)
         conn.close()
-
