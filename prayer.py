@@ -23,7 +23,7 @@ class PrayerWebhook(object):
                         "type":"postback",
                         "title":"Chcę się pomodlić",
                         "payload": json.dumps({"event": "want_to_pray"})
-                    }
+                    },
                 ]
             )
         else:
