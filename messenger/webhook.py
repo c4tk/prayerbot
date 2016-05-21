@@ -32,7 +32,7 @@ class MessengerWebhook:
             'message': response_message
         })
         return response
-        
+
     @staticmethod
     def handle_postback(sender, postback):
         payload = postback['payload']
@@ -40,7 +40,7 @@ class MessengerWebhook:
             response_message = utils.response_text('Jaka jest Twoja intencja?')
         elif payload == 'chce_sie_pomodlic':
             response_message = utils.response_text('TODO')
-            
+
         response = json.dumps({
             'recipient': { 'id' : sender['id'] },
             'message': response_message

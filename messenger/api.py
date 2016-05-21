@@ -13,7 +13,7 @@ class MessengerApi:
         if self.access_token == None:
             print("Environment variable ACCESS_TOKEN is not set")
             sys.exit(2)
-        
+
     def request(self, path, body = None):
         # TODO: make connection persistent and init in __init__
         conn = httplib.HTTPSConnection(GRAPH_API, 443)
