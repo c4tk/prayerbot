@@ -53,6 +53,13 @@ db_file = 'intent.db'
 def is_db_file():
     return os.path.isfile(db_file)
 
+def fetch_from_db():
+    if is_db_file():
+        conn = sqlite3.connect(db_file)
+        c = conn.cursor()
+        data = c.execute(cmd_select)
+    return data.fetchall()
+
 if not is_db_file():
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
@@ -63,13 +70,6 @@ if not is_db_file():
         cmd = cmd_insert % data_line
         c.execute(cmd)
     conn.commit()
-
-def fetch_from_db():
-    if is_db_file():
-        conn = sqlite3.connect(db_file)
-        c = conn.cursor()
-        data = c.execute(cmd_select)
-    return data.fetchall()
 
 def fetch_history():
     data = fetch_from_db()
