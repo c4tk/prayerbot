@@ -53,6 +53,10 @@ class PrayerWebhook(object):
         elif text == 'info':
             resp_text = systools.system_info()
             response_message = utils.response_text("Version: " + resp_text)
+            response = json.dumps({
+                'recipient': { 'id' : sender['id'] },
+                'message': response_message
+            })
         return response
 
     @staticmethod
