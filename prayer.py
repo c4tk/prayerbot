@@ -109,7 +109,7 @@ def map_intention(intention):
 def map_said_intention(intention):
     user_id = intention['user_id']
     return {
-        "title": utils.user_name(user_id),,
+        "title": utils.user_name(user_id),
         "subtitle": intention['description'],
         "buttons": [
             {
