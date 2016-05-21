@@ -42,8 +42,9 @@ def handle_webhook():
             if response_body:
                 api.request("/me/messages", response_body)
         elif 'postback' in event:
-            response_body = webhook.handle_postback(event['sender'], event['postback'])
-            api.request("/me/messages", response_body)
+            response_callbacks = webhook.handle_postback(event['sender'], event['postback'])
+            for response_callback in response_callbacks:
+                api.request("/me/messages", response_callback)
     return "OK"
 
 setup()

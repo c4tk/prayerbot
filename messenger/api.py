@@ -19,6 +19,8 @@ class MessengerApi:
         conn = httplib.HTTPSConnection(GRAPH_API, 443)
         url = GRAPH_API_URL + path + "?access_token=" + self.access_token
         print("* HTTP request: POST " + GRAPH_API + url)
+        if body != None:
+            print("  body: " + body)
         conn.request("POST", url, body, {"Content-type": "application/json"})
         response = conn.getresponse()
         print("* HTTP response: " + str(response.status) + " " + response.reason)

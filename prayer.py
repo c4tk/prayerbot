@@ -61,35 +61,57 @@ class PrayerWebhook(object):
     def handle_postback(sender, postback):
         payload = json.loads(postback['payload'])
         event_type = payload['event']
+        user_id = payload['user_id']
         sender_id = sender['id']
         if event_type == 'pray_for_me':
-            response_message = utils.response_text('Jaka jest Twoja intencja?')
+            callbacks = {
+                sender_id : utils.response_text('Jaka jest Twoja intencja?'),
+            }
         elif event_type == 'want_to_pray':
             intentions = db.fetch_history({"said": "no"}, displayed_prayers_limit)
             print("Fetched intentions: " + json.dumps(intentions))
             intention_elements = map(map_intention, intentions)
             print(json.dumps(intention_elements))
-            response_message = utils.response_elements(intention_elements)
+            callbacks = {
+                sender_id : utils.response_elements(intention_elements),
+            }
         elif event_type == 'intentions':
             intentions = db.fetch_history({"commiter_id": sender_id})
             intention_elements = map(map_said_intention, intentions)
             print(json.dumps(intention_elements))
-            response_message = utils.response_elements(intention_elements)
+            callbacks = {
+                sender_id : utils.response_elements(intention_elements),
+            }
         elif event_type == 'i_pray':
-            response_message = utils.response_text('Zostałeś zapisany na modlitwę w intencji użytkownika ' + utils.user_name(payload['user_id']))
+            callbacks = {
+                sender_id : utils.response_text('Zostałeś zapisany na modlitwę w intencji użytkownika ' + utils.user_name(user_id)),
+                user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' będzie się modlił w Twojej intencji'),
+            }
         elif event_type == 'did_pray':
-            response_message = utils.response_text('Użytkownik ' + utils.user_name(payload['user_id']) + ' został powiadomiony o tym że pomodliłeś się za niego. Dziękujemy')
+            callbacks = {
+                user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' pomodlił się w Twojej intencji'),
+                sender_id : utils.response_text('Użytkownik ' + utils.user_name(user_id) + ' został powiadomiony o tym że pomodliłeś się za niego. Dziękujemy'),
+            }
         elif event_type == 'send_message':
-            response_message = utils.response_text('Użytkownik ' + utils.user_name(payload['user_id']) + ' został powiadomiony o tym że pamiętasz o nim w modlitwie')
+            callbacks = {
+                user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' pamięta o Tobie w modlitwie'),
+                sender_id : utils.response_text('Użytkownik ' + utils.user_name(user_id) + ' został powiadomiony o tym że pamiętasz o nim w modlitwie'),
+            }
         elif event_type == 'give_up':
-            response_message = utils.response_text('Dziękujemy za chęć modlitwy. Użytkownik ' + utils.user_name(payload['user_id']) + ' nie zostanie powiadomiony o Twojej rezygnacji')
+            callbacks = {
+                sender_id : utils.response_text('Dziękujemy za chęć modlitwy. Użytkownik ' + utils.user_name(user_id) + ' nie zostanie powiadomiony o Twojej rezygnacji'),
+            }
 
+        response_callbacks = map(map_callback, callbacks.items())
+        return response_callbacks
 
-        response = json.dumps({
-            'recipient': { 'id' : sender_id },
-            'message': response_message
-        })
-        return response
+def map_callback(callback):
+    sender_id = callback[0] 
+    response_message = callback[1] 
+    return json.dumps({
+        'recipient': { 'id' : sender_id },
+        'message': response_message
+    })
 
 def map_intention(intention):
     user_id = intention['user_id']
