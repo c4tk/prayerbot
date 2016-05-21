@@ -5,7 +5,7 @@ import os
 import sys
 
 GRAPH_API = "graph.facebook.com"
-GRAPH_API_URL = "/v2.6/me"
+GRAPH_API_URL = "/v2.6"
 
 class MessengerApi:
     def __init__(self):
