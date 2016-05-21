@@ -40,7 +40,8 @@ class MessengerWebhook(object):
         if payload == 'pomodl_sie_za_mnie':
             response_message = utils.response_text('Jaka jest Twoja intencja?')
         elif payload == 'chce_sie_pomodlic':
-            response_message = utils.response_text('TODO')
+            intention_text = 'TODO'
+            response_message = utils.response_text(intention_text)
 
         response = json.dumps({
             'recipient': { 'id' : sender['id'] },
