@@ -3,6 +3,7 @@
 
 import json
 import db.storage as storage
+import tools.systools as systools
 from messenger.utils import MessengerUtils as utils
 
 class PrayerWebhook(object):
@@ -31,6 +32,9 @@ class PrayerWebhook(object):
                     },
                 ]
             )
+        elif text == 'info':
+            resp_text = systools.system_info()
+            response_message = utils.response_text("Version: " + resp_text)
         else:
             response_message = utils.response_text("Bot echo: " + text)
 
