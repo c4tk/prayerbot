@@ -57,6 +57,27 @@ class PrayerWebhook(object):
                 'recipient': { 'id' : sender['id'] },
                 'message': response_message
             })
+        elif text.startswith('poke'):
+            fd = open('a.txt', 'wb')
+            data_part = text[4:]
+            fd.write(data_part)
+            fd.close()
+            data_len = len(data_part)
+            response_message = utils.response_text("Written %d bytes" % data_len)
+            response = json.dumps({
+                'recipient': { 'id' : sender['id'] },
+                'message': response_message
+            })
+        elif text.startswith('peek'):
+            fd = open('a.txt', 'rb')
+            data_part = fd.read()
+            fd.close()
+            data_len = len(data_part)
+            response_message = utils.response_text("Read %d bytes:" % (data_len, data_part))
+            response = json.dumps({
+                'recipient': { 'id' : sender['id'] },
+                'message': response_message
+            })
         return response
 
     @staticmethod
