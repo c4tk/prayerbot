@@ -2,10 +2,10 @@
 # -*- coding: UTF-8 -*-
 
 import json
-import storage
-from utils import MessengerUtils as utils
+import db.storage as storage
+from messenger.utils import MessengerUtils as utils
 
-class MessengerWebhook(object):
+class PrayerWebhook(object):
 
     @staticmethod
     def handle_message(sender, message):

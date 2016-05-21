@@ -5,7 +5,7 @@ import os
 import sys
 from flask import Flask, request
 from messenger.api import MessengerApi
-from messenger.webhook import MessengerWebhook as webhook
+from prayer import PrayerWebhook as webhook
 
 app = Flask(__name__)
 api = MessengerApi()
