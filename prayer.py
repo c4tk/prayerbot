@@ -98,17 +98,20 @@ class PrayerWebhook(object):
             prayers = db.fetch_history({"said": "no"}, displayed_prayers_limit)
             print("Fetched prayers: " + json.dumps(prayers))
             prayer_elements = map(map_prayer, prayers)
-            print(json.dumps(prayer_elements))
             callbacks = {
                 sender_id : utils.response_elements(prayer_elements),
             }
         elif event_type == 'prayers':
             prayers = db.fetch_history({"commiter_id": sender_id})
             prayer_elements = map(map_said_prayer, prayers)
-            print(json.dumps(prayer_elements))
-            callbacks = {
-                sender_id : utils.response_elements(prayer_elements),
-            }
+            if prayer_elements == []:
+                callbacks = {
+                    sender_id : utils.response_text('Brak aktualnych intencji'),
+                }
+            else:
+                callbacks = {
+                    sender_id : utils.response_elements(prayer_elements),
+                }
         # specific prayer actions
         elif event_type == 'i_pray':
             callbacks = {
