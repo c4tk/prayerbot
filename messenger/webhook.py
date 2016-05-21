@@ -15,12 +15,12 @@ class MessengerWebhook:
                 [
                     {
                         "type":"postback",
-                        "title":"Potrzebuje modlitwy",
+                        "title":"Potrzebuję modlitwy",
                         "payload":"pomodl_sie_za_mnie"
                     },
                     {
                         "type":"postback",
-                        "title":"Chce sie pomodlic",
+                        "title":"Chcę się pomodlić",
                         "payload":"chce_sie_pomodlic"
                     }
                 ]
