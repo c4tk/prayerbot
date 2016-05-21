@@ -10,7 +10,7 @@ class PrayerWebhook(object):
     @staticmethod
     def handle_message(sender, message):
         text = message['text']
-        if text == 'modlitwa' orelse text == 'm':
+        if text in ['modlitwa', 'm']:
             response_message = utils.response_buttons(
                 "Witaj user " + sender['id'] + "... Czego potrzebujesz?",
                 [
