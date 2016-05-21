@@ -24,6 +24,11 @@ class PrayerWebhook(object):
                         "title":"Chcę się pomodlić",
                         "payload": json.dumps({"event": "want_to_pray"})
                     },
+                    {
+                        "type":"postback",
+                        "title":"Pomodliłem się",
+                        "payload": json.dumps({"event": "did_pray"})
+                    },
                 ]
             )
         else:
@@ -42,6 +47,12 @@ class PrayerWebhook(object):
         if event_type == 'pray_for_me':
             response_message = utils.response_text('Jaka jest Twoja intencja?')
         elif event_type == 'want_to_pray':
+            intentions = storage.fetch_history()
+            print("Fetched intentions: " + json.dumps(intentions))
+            intention_elements = map(transform_intention, intentions)
+            print(json.dumps(intention_elements))
+            response_message = utils.response_elements(intention_elements)
+        elif event_type == 'did_pray':
             intentions = storage.fetch_history()
             print("Fetched intentions: " + json.dumps(intentions))
             intention_elements = map(transform_intention, intentions)
