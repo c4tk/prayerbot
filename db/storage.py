@@ -1,8 +1,8 @@
+#!/usr/bin/env python2
+# -*- coding: UTF-8 -*-
 
 def fetch_history():
-    return '''\
-intencja 1
-intencja 2
-intencja 3
-intencja 4
-'''
+    return [
+        {"id": 12, "user_id": 12312412, "description": "Potrzebuję modlitwy w intencji mojej mamy", "ts": 1412412331},
+        {"id": 15, "user_id": 12312418, "description": "O rozeznanie drogi", "ts": 121312312}
+    ]
