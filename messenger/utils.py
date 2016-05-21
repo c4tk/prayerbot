@@ -2,6 +2,8 @@ import json
 import os
 import requests
 
+GRAPH_API_URL = '/v2.6/'
+
 def response_text(text):
     return json.dumps({"text": text})
 

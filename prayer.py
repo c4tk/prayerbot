@@ -15,7 +15,7 @@ class PrayerWebhook(object):
         text = message['text']
         if text in ['modlitwa', 'm']:
             response_message = utils.response_buttons(
-                "Witaj user " + sender['id'] + "... Czego potrzebujesz?",
+                "Witaj " + utils.user_name(sender['id']) + "... Czego potrzebujesz?",
                 [
                     {
                         "type":"postback",
@@ -94,7 +94,7 @@ class PrayerWebhook(object):
 def map_intention(intention):
     user_id = intention['user_id']
     return {
-        "title": user_id,
+        "title": utils.user_name(user_id),
         "subtitle": intention['description'],
         "buttons": [
             {
@@ -109,7 +109,7 @@ def map_intention(intention):
 def map_said_intention(intention):
     user_id = intention['user_id']
     return {
-        "title": user_id,
+        "title": utils.user_name(user_id),,
         "subtitle": intention['description'],
         "buttons": [
             {
