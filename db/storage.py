@@ -64,11 +64,12 @@ if not is_db_file():
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
     c.execute(cmd_create)
-    for data_line in data:
-        data_line['label_name'] = label_id
-        data_line['label_value'] = data_line[label_id]
-        cmd = cmd_insert % data_line
-        c.execute(cmd)
+    if not fetch_from_db():
+        for data_line in data:
+            data_line['label_name'] = label_id
+            data_line['label_value'] = data_line[label_id]
+            cmd = cmd_insert % data_line
+            c.execute(cmd)
     conn.commit()
 
 def fetch_history():
