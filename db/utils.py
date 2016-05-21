@@ -10,3 +10,10 @@ def fetch_history(attributes, limit = None):
     if limit:
         filtered_data = filtered_data[:limit]
     return filtered_data
+
+def fetch(id):
+    data = storage.fetch_history()
+    for prayer in data:
+        if prayer['id'] == id:
+            break
+    return prayer
