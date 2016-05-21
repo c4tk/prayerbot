@@ -76,13 +76,13 @@ class PrayerWebhook(object):
             print(json.dumps(intention_elements))
             response_message = utils.response_elements(intention_elements)
         elif event_type == 'i_pray':
-            response_message = utils.response_text('Zostałeś zapisany na modlitwę w intencji użytkownika ' + user_name(payload['user_id']))
+            response_message = utils.response_text('Zostałeś zapisany na modlitwę w intencji użytkownika ' + utils.user_name(payload['user_id']))
         elif event_type == 'did_pray':
-            response_message = utils.response_text('Użytkownik ' + user_name(payload['user_id']) + ' został powiadomiony o tym że pomodliłeś się za niego. Dziękujemy')
+            response_message = utils.response_text('Użytkownik ' + utils.user_name(payload['user_id']) + ' został powiadomiony o tym że pomodliłeś się za niego. Dziękujemy')
         elif event_type == 'send_message':
-            response_message = utils.response_text('Użytkownik ' + user_name(payload['user_id']) + ' został powiadomiony o tym że pamiętasz o nim w modlitwie')
+            response_message = utils.response_text('Użytkownik ' + utils.user_name(payload['user_id']) + ' został powiadomiony o tym że pamiętasz o nim w modlitwie')
         elif event_type == 'give_up':
-            response_message = utils.response_text('Dziękujemy za chęć modlitwy. Użytkownik ' + user_name(payload['user_id']) + ' nie zostanie powiadomiony o Twojej rezygnacji')
+            response_message = utils.response_text('Dziękujemy za chęć modlitwy. Użytkownik ' + utils.user_name(payload['user_id']) + ' nie zostanie powiadomiony o Twojej rezygnacji')
 
 
         response = json.dumps({
