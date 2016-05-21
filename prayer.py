@@ -12,6 +12,7 @@ class PrayerWebhook(object):
 
     @staticmethod
     def handle_message(sender, message):
+        response = None
         text = message['text']
         if text in ['modlitwa', 'm']:
             response_message = utils.response_buttons(
@@ -34,7 +35,6 @@ class PrayerWebhook(object):
                 'recipient': { 'id' : sender['id'] },
                 'message': response_message
             })
-            return response
         elif text in ['intencje', 'i']:
             response_message = utils.response_buttons(
                 "Twoje intencje",
@@ -50,12 +50,10 @@ class PrayerWebhook(object):
                 'recipient': { 'id' : sender['id'] },
                 'message': response_message
             })
-            return response
         elif text == 'info':
             resp_text = systools.system_info()
             response_message = utils.response_text("Version: " + resp_text)
-        else:
-            return None
+        return response
 
     @staticmethod
     def handle_postback(sender, postback):
