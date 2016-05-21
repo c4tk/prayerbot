@@ -56,7 +56,6 @@ if not is_db_file():
     c.execute(cmd_create)
     for data_line in data:
         cmd = cmd_insert % data_line
-        print cmd
         c.execute(cmd)
     conn.commit()
 
