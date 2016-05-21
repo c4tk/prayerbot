@@ -4,7 +4,7 @@
 import json
 from utils import MessengerUtils as utils
 
-class MessengerWebhook:
+class MessengerWebhook(object):
 
     @staticmethod
     def handle_message(sender, message):
