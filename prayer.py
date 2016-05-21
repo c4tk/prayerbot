@@ -14,9 +14,10 @@ class PrayerWebhook(object):
     def handle_message(sender, message):
         response = None
         text = message['text']
+        sender_id = sender['id']
         if text in ['modlitwa', 'm']:
             response_message = utils.response_buttons(
-                "Witaj " + utils.user_name(sender['id']) + "... Czego potrzebujesz?",
+                "Witaj " + utils.user_name(sender_id) + "... Czego potrzebujesz?",
                 [
                     {
                         "type":"postback",
@@ -32,7 +33,7 @@ class PrayerWebhook(object):
             )
 
             response = json.dumps({
-                'recipient': { 'id' : sender['id'] },
+                'recipient': { 'id' : sender_id },
                 'message': response_message
             })
         elif text in ['intencje', 'i']:
@@ -47,14 +48,14 @@ class PrayerWebhook(object):
                 ]
             )
             response = json.dumps({
-                'recipient': { 'id' : sender['id'] },
+                'recipient': { 'id' : sender_id },
                 'message': response_message
             })
         elif text == 'info':
             resp_text = systools.system_info()
             response_message = utils.response_text("Version: " + resp_text)
             response = json.dumps({
-                'recipient': { 'id' : sender['id'] },
+                'recipient': { 'id' : sender_id },
                 'message': response_message
             })
         elif text.startswith('poke'):
@@ -65,7 +66,7 @@ class PrayerWebhook(object):
             data_len = len(data_part)
             response_message = utils.response_text("Written %d bytes" % data_len)
             response = json.dumps({
-                'recipient': { 'id' : sender['id'] },
+                'recipient': { 'id' : sender_id },
                 'message': response_message
             })
         elif text.startswith('peek'):
@@ -75,7 +76,7 @@ class PrayerWebhook(object):
             data_len = len(data_part)
             response_message = utils.response_text("Read %d bytes: %s" % (data_len, data_part))
             response = json.dumps({
-                'recipient': { 'id' : sender['id'] },
+                'recipient': { 'id' : sender_id },
                 'message': response_message
             })
         return response
