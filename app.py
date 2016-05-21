@@ -1,8 +1,5 @@
 #!/usr/bin/env python2
 
-import json
-import os
-import sys
 from flask import Flask, request
 from messenger.api import MessengerApi
 from prayer import PrayerWebhook as webhook
