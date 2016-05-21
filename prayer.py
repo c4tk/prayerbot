@@ -4,7 +4,7 @@
 import json
 import db.utils as db
 import tools.systools as systools
-from messenger.utils import MessengerUtils as utils
+import messenger.utils as utils
 
 displayed_prayers_limit = 5
 
@@ -102,7 +102,8 @@ def map_intention(intention):
                 "title": "Modlę się",
                 "payload": json.dumps({"event": "i_pray", "user_id": user_id})
             }
-        ]
+        ],
+        "image_url": utils.get_img_url(user_id)
     }
 
 def map_said_intention(intention):
@@ -126,8 +127,6 @@ def map_said_intention(intention):
                 "title": "Rezygnuję z modlitwy",
                 "payload": json.dumps({"event": "give_up", "user_id": user_id})
             },
-        ]
+        ],
+        "image_url": utils.get_img_url(user_id)
     }
-
-def user_name(user_id):
-    return str(user_id)
