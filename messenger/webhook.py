@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import json
+import storage
 from utils import MessengerUtils as utils
 
 class MessengerWebhook(object):
@@ -40,7 +41,7 @@ class MessengerWebhook(object):
         if payload == 'pomodl_sie_za_mnie':
             response_message = utils.response_text('Jaka jest Twoja intencja?')
         elif payload == 'chce_sie_pomodlic':
-            intention_text = 'TODO'
+            intention_text = storage.fetch_history()
             response_message = utils.response_text(intention_text)
 
         response = json.dumps({
