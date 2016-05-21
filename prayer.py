@@ -5,6 +5,7 @@ import json
 import db.utils as db
 import tools.systools as systools
 import messenger.utils as utils
+from db.labels import label_id
 
 displayed_prayers_limit = 5
 
@@ -154,7 +155,7 @@ def map_prayer(prayer):
             {
                 "type": "postback",
                 "title": "Modlę się",
-                "payload": json.dumps({"event": "i_pray", "prayer_id": prayer['id'], "user_id": user_id})
+                "payload": json.dumps({"event": "i_pray", "prayer_id": prayer[label_id], "user_id": user_id})
             }
         ],
         "image_url": utils.get_img_url(user_id)
@@ -169,17 +170,17 @@ def map_said_prayer(prayer):
             {
                 "type": "postback",
                 "title": "Pomodliłem się",
-                "payload": json.dumps({"event": "did_pray", "prayer_id": prayer['id'], "user_id": user_id})
+                "payload": json.dumps({"event": "did_pray", "prayer_id": prayer[label_id], "user_id": user_id})
             },
             {
                 "type": "postback",
                 "title": "Zapewnij o modlitwie",
-                "payload": json.dumps({"event": "send_message", "prayer_id": prayer['id'], "user_id": user_id})
+                "payload": json.dumps({"event": "send_message", "prayer_id": prayer[label_id], "user_id": user_id})
             },
             {
                 "type": "postback",
                 "title": "Rezygnuję z modlitwy",
-                "payload": json.dumps({"event": "give_up", "prayer_id": prayer['id'], "user_id": user_id})
+                "payload": json.dumps({"event": "give_up", "prayer_id": prayer[label_id], "user_id": user_id})
             },
         ],
         "image_url": utils.get_img_url(user_id)
