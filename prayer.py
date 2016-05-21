@@ -2,9 +2,11 @@
 # -*- coding: UTF-8 -*-
 
 import json
-import db.storage as storage
+import db.utils as db
 import tools.systools as systools
 from messenger.utils import MessengerUtils as utils
+
+displayed_prayers_limit = 5
 
 class PrayerWebhook(object):
 
@@ -63,13 +65,13 @@ class PrayerWebhook(object):
         if event_type == 'pray_for_me':
             response_message = utils.response_text('Jaka jest Twoja intencja?')
         elif event_type == 'want_to_pray':
-            intentions = storage.fetch_history({"said": "no"})
+            intentions = db.fetch_history({"said": "no"}, displayed_prayers_limit)
             print("Fetched intentions: " + json.dumps(intentions))
             intention_elements = map(map_intention, intentions)
             print(json.dumps(intention_elements))
             response_message = utils.response_elements(intention_elements)
         elif event_type == 'intentions':
-            intentions = storage.fetch_history({"commiter_id": sender_id})
+            intentions = db.fetch_history({"commiter_id": sender_id})
             intention_elements = map(map_said_intention, intentions)
             print(json.dumps(intention_elements))
             response_message = utils.response_elements(intention_elements)
