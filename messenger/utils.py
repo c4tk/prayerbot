@@ -18,3 +18,14 @@ class MessengerUtils(object):
             }
         })
 
+    @staticmethod
+    def response_elements(elements):
+        return json.dumps({
+            "attachment":{
+                "type":"template",
+                "payload":{
+                    "template_type":"generic",
+                    "elements": elements
+                }
+            }
+        })

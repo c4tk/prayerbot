@@ -10,19 +10,19 @@ class PrayerWebhook(object):
     @staticmethod
     def handle_message(sender, message):
         text = message['text']
-        if text == 'modlitwa':
+        if text == 'modlitwa' orelse text == 'm':
             response_message = utils.response_buttons(
                 "Witaj user " + sender['id'] + "... Czego potrzebujesz?",
                 [
                     {
                         "type":"postback",
                         "title":"Potrzebuję modlitwy",
-                        "payload":"pomodl_sie_za_mnie"
+                        "payload": json.dumps({"event": "pray_for_me"})
                     },
                     {
                         "type":"postback",
                         "title":"Chcę się pomodlić",
-                        "payload":"chce_sie_pomodlic"
+                        "payload": json.dumps({"event": "want_to_pray"})
                     }
                 ]
             )
@@ -37,15 +37,36 @@ class PrayerWebhook(object):
 
     @staticmethod
     def handle_postback(sender, postback):
-        payload = postback['payload']
-        if payload == 'pomodl_sie_za_mnie':
+        payload = json.loads(postback['payload'])
+        event_type = payload['event']
+        if event_type == 'pray_for_me':
             response_message = utils.response_text('Jaka jest Twoja intencja?')
-        elif payload == 'chce_sie_pomodlic':
-            intention_text = storage.fetch_history()
-            response_message = utils.response_text(intention_text)
+        elif event_type == 'want_to_pray':
+            intentions = storage.fetch_history()
+            print("Fetched intentions: " + json.dumps(intentions))
+            intention_elements = map(transform_intention, intentions)
+            print(json.dumps(intention_elements))
+            response_message = utils.response_elements(intention_elements)
+        elif event_type == 'i_pray':
+            response_message = utils.response_text('Zostałeś zapisany na modlitwę w intencji użytkownika ' + str(payload['user_id']))
 
         response = json.dumps({
             'recipient': { 'id' : sender['id'] },
             'message': response_message
         })
         return response
+
+def transform_intention(intention):
+    user_id = intention['user_id']
+    return {
+        "title": user_id,
+        "subtitle": intention['description'],
+        "buttons": [
+            {
+                "type": "postback",
+                "title": "Modlę się",
+                "payload": json.dumps({"event": "i_pray", "user_id": user_id})
+            }
+        ]
+    }
+        
