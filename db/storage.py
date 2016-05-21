@@ -3,14 +3,15 @@
 
 import os
 import sqlite3
+from labels import label_id
 
 data = [
-    {"id": 12, "user_id": "1099770976753951", "description": "Potrzebuję modlitwy w intencji mojej mamy", "ts": 1412412331, "said": "no", "commiter_id": "1099770976753951", },
-    {"id": 13, "user_id": "1099770976753951", "description": "O powrót do zdrowia", "ts": 121312313, "said": "no", "commiter_id": "", },
-    {"id": 15, "user_id": "1209178385783730", "description": "O rozeznanie drogi", "ts": 121312312, "said": "no", "commiter_id": None, },
-    {"id": 16, "user_id": "10208414992228182", "description": "O Światowe Dni Młodzieży", "ts": 121312313, "said": "no", "commiter_id": "1209178385783730", },
-    {"id": 17, "user_id": "10208414992228182", "description": "W intencji Bogu wiadomej", "ts": 121312313, "said": "no", "commiter_id": "1099770976753951", },
-    {"id": 18, "user_id": "215380638847054", "description": "W intencji Bogu wiadomej", "ts": 121312313, "said": "yes", "commiter_id": None, },
+    {label_id: 12, "user_id": "1099770976753951", "description": "Potrzebuję modlitwy w intencji mojej mamy", "ts": 1412412331, "said": "no", "commiter_id": "1099770976753951", },
+    {label_id: 13, "user_id": "1099770976753951", "description": "O powrót do zdrowia", "ts": 121312313, "said": "no", "commiter_id": "", },
+    {label_id: 15, "user_id": "1209178385783730", "description": "O rozeznanie drogi", "ts": 121312312, "said": "no", "commiter_id": None, },
+    {label_id: 16, "user_id": "10208414992228182", "description": "O Światowe Dni Młodzieży", "ts": 121312313, "said": "no", "commiter_id": "1209178385783730", },
+    {label_id: 17, "user_id": "10208414992228182", "description": "W intencji Bogu wiadomej", "ts": 121312313, "said": "no", "commiter_id": "1099770976753951", },
+    {label_id: 18, "user_id": "215380638847054", "description": "W intencji Bogu wiadomej", "ts": 121312313, "said": "yes", "commiter_id": None, },
 ]
 
 cmd_create = """\
@@ -24,11 +25,12 @@ commiter_id text
 """
 
 cmd_select = """\
-SELECT * FROM t_intent
-"""
+SELECT %s, * FROM t_intent
+""" % label_id
 
 cmd_insert = """\
 INSERT INTO t_intent(
+%(label_name)s,
 user_id,
 description,
 ts,
@@ -37,9 +39,10 @@ commiter_id
 )
 VALUES
 (
+%(label_value)d,
 '%(user_id)s',
 '%(description)s',
-%(ts)s,
+%(ts)d,
 '%(said)s',
 '%(commiter_id)s'
 )
@@ -55,6 +58,8 @@ if not is_db_file():
     c = conn.cursor()
     c.execute(cmd_create)
     for data_line in data:
+        data_line['label_name'] = label_id
+        data_line['label_value'] = data_line[label_id]
         cmd = cmd_insert % data_line
         c.execute(cmd)
     conn.commit()

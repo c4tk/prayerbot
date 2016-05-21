@@ -3,6 +3,7 @@
 
 import random
 import storage
+from labels import label_id
 
 def fetch_history(attributes, limit = None):
     data = storage.fetch_history()
@@ -19,6 +20,6 @@ def fetch_history(attributes, limit = None):
 def fetch(id):
     data = storage.fetch_history()
     for prayer in data:
-        if prayer['id'] == id:
+        if prayer[label_id] == id:
             break
     return prayer
