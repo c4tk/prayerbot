@@ -39,10 +39,10 @@ def get_user_data(user_id):
 def user_name(user_id):
     data = get_user_data(user_id)
     if ('first_name' in data):
-        return data['first_name']
+        return data['first_name'].encode("utf-8")
     else:
         if ('name' in data):
-            return data['name'].split(' ')[0]
+            return data['name'].split(' ')[0].encode("utf-8")
         else:
             raise NameError('Name not found in data provided')
 
