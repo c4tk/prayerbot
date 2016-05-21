@@ -59,16 +59,17 @@ class PrayerWebhook(object):
     def handle_postback(sender, postback):
         payload = json.loads(postback['payload'])
         event_type = payload['event']
+        sender_id = sender['id']
         if event_type == 'pray_for_me':
             response_message = utils.response_text('Jaka jest Twoja intencja?')
         elif event_type == 'want_to_pray':
-            intentions = storage.fetch_history()
+            intentions = storage.fetch_history({"said": "no"})
             print("Fetched intentions: " + json.dumps(intentions))
             intention_elements = map(map_intention, intentions)
             print(json.dumps(intention_elements))
             response_message = utils.response_elements(intention_elements)
         elif event_type == 'intentions':
-            intentions = storage.fetch_history()
+            intentions = storage.fetch_history({"commiter_id": sender_id})
             intention_elements = map(map_said_intention, intentions)
             print(json.dumps(intention_elements))
             response_message = utils.response_elements(intention_elements)
@@ -80,7 +81,7 @@ class PrayerWebhook(object):
             response_message = utils.response_text('Użytkownik ' + user_name(payload['user_id']) + ' został powiadomiony o tym że pamiętasz o nim w modlitwie')
 
         response = json.dumps({
-            'recipient': { 'id' : sender['id'] },
+            'recipient': { 'id' : sender_id },
             'message': response_message
         })
         return response
