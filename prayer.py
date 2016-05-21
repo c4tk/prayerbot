@@ -25,24 +25,35 @@ class PrayerWebhook(object):
                         "title":"Chcę się pomodlić",
                         "payload": json.dumps({"event": "want_to_pray"})
                     },
+                ]
+            )
+
+            response = json.dumps({
+                'recipient': { 'id' : sender['id'] },
+                'message': response_message
+            })
+            return response
+        elif text in ['intencje', 'i']:
+            response_message = utils.response_buttons(
+                "Twoje intencje",
+                [
                     {
                         "type":"postback",
-                        "title":"Pomodliłem się",
-                        "payload": json.dumps({"event": "did_pray"})
+                        "title":"Intencje",
+                        "payload": json.dumps({"event": "intentions"})
                     },
                 ]
             )
+            response = json.dumps({
+                'recipient': { 'id' : sender['id'] },
+                'message': response_message
+            })
+            return response
         elif text == 'info':
             resp_text = systools.system_info()
             response_message = utils.response_text("Version: " + resp_text)
         else:
-            response_message = utils.response_text("Bot echo: " + text)
-
-        response = json.dumps({
-            'recipient': { 'id' : sender['id'] },
-            'message': response_message
-        })
-        return response
+            return None
 
     @staticmethod
     def handle_postback(sender, postback):
@@ -53,17 +64,20 @@ class PrayerWebhook(object):
         elif event_type == 'want_to_pray':
             intentions = storage.fetch_history()
             print("Fetched intentions: " + json.dumps(intentions))
-            intention_elements = map(transform_intention, intentions)
+            intention_elements = map(map_intention, intentions)
             print(json.dumps(intention_elements))
             response_message = utils.response_elements(intention_elements)
-        elif event_type == 'did_pray':
+        elif event_type == 'intentions':
             intentions = storage.fetch_history()
-            print("Fetched intentions: " + json.dumps(intentions))
-            intention_elements = map(transform_intention, intentions)
+            intention_elements = map(map_said_intention, intentions)
             print(json.dumps(intention_elements))
             response_message = utils.response_elements(intention_elements)
         elif event_type == 'i_pray':
-            response_message = utils.response_text('Zostałeś zapisany na modlitwę w intencji użytkownika ' + str(payload['user_id']))
+            response_message = utils.response_text('Zostałeś zapisany na modlitwę w intencji użytkownika ' + user_name(payload['user_id']))
+        elif event_type == 'did_pray':
+            response_message = utils.response_text('Użytkownik ' + user_name(payload['user_id']) + ' został powiadomiony o tym że pomodliłeś się za niego. Dziękujemy')
+        elif event_type == 'send_message':
+            response_message = utils.response_text('Użytkownik ' + user_name(payload['user_id']) + ' został powiadomiony o tym że pamiętasz o nim w modlitwie')
 
         response = json.dumps({
             'recipient': { 'id' : sender['id'] },
@@ -71,7 +85,7 @@ class PrayerWebhook(object):
         })
         return response
 
-def transform_intention(intention):
+def map_intention(intention):
     user_id = intention['user_id']
     return {
         "title": user_id,
@@ -84,3 +98,25 @@ def transform_intention(intention):
             }
         ]
     }
+
+def map_said_intention(intention):
+    user_id = intention['user_id']
+    return {
+        "title": user_id,
+        "subtitle": intention['description'],
+        "buttons": [
+            {
+                "type": "postback",
+                "title": "Pomodliłem się",
+                "payload": json.dumps({"event": "did_pray", "user_id": user_id})
+            },
+            {
+                "type": "postback",
+                "title": "Zapewnij o modlitwie",
+                "payload": json.dumps({"event": "send_message", "user_id": user_id})
+            }
+        ]
+    }
+
+def user_name(user_id):
+    return str(user_id)

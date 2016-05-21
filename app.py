@@ -36,7 +36,8 @@ def handle_webhook():
     for event in messaging_events:
         if 'message' in event:
             response_body = webhook.handle_message(event['sender'], event['message'])
-            api.request("/me/messages", response_body)
+            if response_body:
+                api.request("/me/messages", response_body)
         elif 'postback' in event:
             response_body = webhook.handle_postback(event['sender'], event['postback'])
             api.request("/me/messages", response_body)
