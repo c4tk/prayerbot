@@ -53,9 +53,16 @@ db_file = 'intent.db'
 def is_db_file():
     return os.path.isfile(db_file)
 
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
 def fetch_from_db():
     if is_db_file():
         conn = sqlite3.connect(db_file)
+        conn.row_factory = dict_factory
         c = conn.cursor()
         data = c.execute(cmd_select)
     return data.fetchall()
