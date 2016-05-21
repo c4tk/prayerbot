@@ -81,6 +81,9 @@ class PrayerWebhook(object):
             response_message = utils.response_text('Użytkownik ' + user_name(payload['user_id']) + ' został powiadomiony o tym że pomodliłeś się za niego. Dziękujemy')
         elif event_type == 'send_message':
             response_message = utils.response_text('Użytkownik ' + user_name(payload['user_id']) + ' został powiadomiony o tym że pamiętasz o nim w modlitwie')
+        elif event_type == 'give_up':
+            response_message = utils.response_text('Dziękujemy za chęć modlitwy. Użytkownik ' + user_name(payload['user_id']) + ' nie zostanie powiadomiony o Twojej rezygnacji')
+
 
         response = json.dumps({
             'recipient': { 'id' : sender_id },
@@ -117,7 +120,12 @@ def map_said_intention(intention):
                 "type": "postback",
                 "title": "Zapewnij o modlitwie",
                 "payload": json.dumps({"event": "send_message", "user_id": user_id})
-            }
+            },
+            {
+                "type": "postback",
+                "title": "Rezygnuję z modlitwy",
+                "payload": json.dumps({"event": "give_up", "user_id": user_id})
+            },
         ]
     }
 
