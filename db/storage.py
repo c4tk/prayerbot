@@ -15,7 +15,7 @@ data = [
 ]
 
 cmd_create = """\
-CREATE TABLE t_intent(
+CREATE TABLE IF NOT EXISTS t_intent(
 user_id text,
 description text,
 ts integer,
