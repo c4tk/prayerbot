@@ -73,7 +73,7 @@ class PrayerWebhook(object):
             data_part = fd.read()
             fd.close()
             data_len = len(data_part)
-            response_message = utils.response_text("Read %d bytes:" % (data_len, data_part))
+            response_message = utils.response_text("Read %d bytes: %s" % (data_len, data_part))
             response = json.dumps({
                 'recipient': { 'id' : sender['id'] },
                 'message': response_message
@@ -84,7 +84,8 @@ class PrayerWebhook(object):
     def handle_postback(sender, postback):
         payload = json.loads(postback['payload'])
         event_type = payload['event']
-        user_id = payload['user_id']
+        if 'user_id' in payload:
+            user_id = payload['user_id']
         sender_id = sender['id']
         if event_type == 'pray_for_me':
             callbacks = {
