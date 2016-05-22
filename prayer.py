@@ -38,7 +38,7 @@ class PrayerWebhook(object):
                 'recipient': { 'id' : sender_id },
                 'message': response_message
             })
-        elif lower_text in ['help', 'pomoc'] or 'modl' in lower_text:
+        elif lower_text in ['help', 'pomoc'] or 'modl' in lower_text or 'pray' in lower_text:
             commited_prayers = db.fetch_history({"commiter_id": sender_id})
             options = [
                 {
