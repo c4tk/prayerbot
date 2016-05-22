@@ -37,9 +37,9 @@ class PrayerWebhook(object):
                 'recipient': { 'id' : sender_id },
                 'message': response_message
             })
-        elif text in ['modlitwa', 'm']:
+        elif text in ['help', 'pomoc']:
             response_message = utils.response_buttons(
-                "Witaj " + utils.user_name(sender_id) + "... Czego potrzebujesz?",
+                "Witaj " + utils.user_name(sender_id) + "...\nZapraszamy do korzystania ze Skrzynki Modlitewnej. Czego potrzebujesz?",
                 [
                     {
                         "type":"postback",
@@ -51,20 +51,9 @@ class PrayerWebhook(object):
                         "title":"Chcę się pomodlić",
                         "payload": json.dumps({"user_event": "want_to_pray"})
                     },
-                ]
-            )
-
-            response = json.dumps({
-                'recipient': { 'id' : sender_id },
-                'message': response_message
-            })
-        elif text in ['intencje', 'i']:
-            response_message = utils.response_buttons(
-                "Twoje intencje",
-                [
                     {
                         "type":"postback",
-                        "title":"Intencje",
+                        "title":"Za kogo się modlę?",
                         "payload": json.dumps({"user_event": "prayers"})
                     },
                 ]
@@ -80,23 +69,8 @@ class PrayerWebhook(object):
                 'recipient': { 'id' : sender_id },
                 'message': response_message
             })
-        elif text.startswith('poke'):
-            fd = open('a.txt', 'wb')
-            data_part = text[4:]
-            fd.write(data_part)
-            fd.close()
-            data_len = len(data_part)
-            response_message = utils.response_text("Written %d bytes" % data_len)
-            response = json.dumps({
-                'recipient': { 'id' : sender_id },
-                'message': response_message
-            })
-        elif text.startswith('peek'):
-            fd = open('a.txt', 'rb')
-            data_part = fd.read()
-            fd.close()
-            data_len = len(data_part)
-            response_message = utils.response_text("Read %d bytes: %s" % (data_len, data_part))
+        else:
+            response_message = utils.response_text("Niestety nie rozumiem Twojej prośby.\nWpisz 'pomoc' żeby uzyskać dodatkowe informacje.")
             response = json.dumps({
                 'recipient': { 'id' : sender_id },
                 'message': response_message
