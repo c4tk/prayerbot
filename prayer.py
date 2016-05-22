@@ -153,18 +153,18 @@ class PrayerWebhook(object):
             db.update_commiter(prayer_id, sender_id)
             return {
                 sender_id : utils.response_text('Zostałeś zapisany na modlitwę w intencji użytkownika ' + utils.user_name(user_id)),
-                user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' będzie się modlił w następującej intencji: ' + prayer_description),
+                user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' będzie się modlił w Twojej następującej intencji: ' + prayer_description),
             }
         elif event_type == 'did_pray':
             db.delete(prayer_id)
             return {
                 user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' pomodlił się w Twojej intencji: ' + prayer_description),
-                sender_id : utils.response_text('Użytkownik ' + utils.user_name(user_id) + ' został powiadomiony o tym że pomodliłeś się za niego. Dziękujemy'),
+                sender_id : utils.response_text('Użytkownik ' + utils.user_name(user_id) + ' został powiadomiony o tym, że pomodliłeś się za niego. Dziękujemy'),
             }
         elif event_type == 'send_message':
             return {
                 user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' pamięta o Tobie w modlitwie w następującej intencji: ' + prayer_description),
-                sender_id : utils.response_text('Użytkownik ' + utils.user_name(user_id) + ' został powiadomiony o tym że pamiętasz o nim w modlitwie'),
+                sender_id : utils.response_text('Użytkownik ' + utils.user_name(user_id) + ' został powiadomiony o tym, że pamiętasz o nim w modlitwie'),
             }
         elif event_type == 'give_up':
             db.update_commiter(prayer_id, '')
