@@ -67,16 +67,28 @@ def fetch_from_db():
         data = c.execute(cmd_select)
     return data.fetchall()
 
+def insert_row(data_line, conn=None):
+    if conn is None:
+        conn = sqlite3.connect(db_file)
+        is_opened = 1
+    else:
+        is_opened = 0
+    c = conn.cursor()
+    data_line['label_name'] = label_id
+    data_line['label_value'] = data_line[label_id]
+    cmd = cmd_insert % data_line
+    c.execute(cmd)
+    conn.commit()
+    if is_opened:
+        conn.close()
+
 if not is_db_file():
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
     c.execute(cmd_create)
     if not fetch_from_db():
         for data_line in data:
-            data_line['label_name'] = label_id
-            data_line['label_value'] = data_line[label_id]
-            cmd = cmd_insert % data_line
-            c.execute(cmd)
+            insert_row(data_line, conn=conn)
     conn.commit()
 
 def fetch_history():
