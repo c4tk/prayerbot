@@ -14,6 +14,7 @@ class PrayerWebhook(object):
     def handle_message(sender, message):
         response = None
         text = message['text'].encode('utf-8')
+        lower_text = text.lower()
         sender_id = sender['id']
         initialized_prayers = db.fetch_history({"user_id": sender_id, "description": ""})
         if initialized_prayers != []:
@@ -37,26 +38,29 @@ class PrayerWebhook(object):
                 'recipient': { 'id' : sender_id },
                 'message': response_message
             })
-        elif text in ['help', 'pomoc']:
+        elif lower_text in ['help', 'pomoc'] or 'modl' in lower_text:
+            commited_prayers = db.fetch_history({"commiter_id": sender_id})
+            options = [
+                {
+                    "type":"postback",
+                    "title":"Potrzebuję modlitwy",
+                    "payload": json.dumps({"user_event": "pray_for_me"})
+                },
+                {
+                    "type":"postback",
+                    "title":"Chcę się pomodlić",
+                    "payload": json.dumps({"user_event": "want_to_pray"})
+                },
+            ]
+            if commited_prayers != []:
+                options.append({
+                    "type":"postback",
+                    "title":"Za kogo się modlę?",
+                    "payload": json.dumps({"user_event": "prayers"})
+                })
             response_message = utils.response_buttons(
-                "Witaj " + utils.user_name(sender_id) + "...\nZapraszamy do korzystania ze Skrzynki Modlitewnej. Czego potrzebujesz?",
-                [
-                    {
-                        "type":"postback",
-                        "title":"Potrzebuję modlitwy",
-                        "payload": json.dumps({"user_event": "pray_for_me"})
-                    },
-                    {
-                        "type":"postback",
-                        "title":"Chcę się pomodlić",
-                        "payload": json.dumps({"user_event": "want_to_pray"})
-                    },
-                    {
-                        "type":"postback",
-                        "title":"Za kogo się modlę?",
-                        "payload": json.dumps({"user_event": "prayers"})
-                    },
-                ]
+                "Proszę wybierz czego potrzebujesz?",
+                options
             )
             response = json.dumps({
                 'recipient': { 'id' : sender_id },
@@ -70,7 +74,7 @@ class PrayerWebhook(object):
                 'message': response_message
             })
         else:
-            response_message = utils.response_text("Niestety nie rozumiem Twojej prośby.\nWpisz 'pomoc' żeby uzyskać dodatkowe informacje.")
+            response_message = utils.response_text("Niestety Cię nie rozumiem.\nWpisz 'pomoc' żeby uzyskać dodatkowe informacje.")
             response = json.dumps({
                 'recipient': { 'id' : sender_id },
                 'message': response_message
@@ -127,8 +131,8 @@ class PrayerWebhook(object):
                 sender_id : utils.response_elements(prayer_elements),
             }
         elif event_type == 'prayers':
-            prayers = db.fetch_history({"commiter_id": sender_id})
-            prayer_elements = map(map_said_prayer, prayers)
+            commited_prayers = db.fetch_history({"commiter_id": sender_id})
+            prayer_elements = map(map_said_prayer, commited_prayers)
             if prayer_elements == []:
                 return {
                     sender_id : utils.response_text('Brak aktualnych intencji'),
