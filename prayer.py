@@ -134,6 +134,14 @@ class PrayerWebhook(object):
             return {
             }
         elif event_type == 'pray_for_me':
+            data_line = dict(
+                user_id=sender_id,
+                commiter_id="",
+                ts=1234,
+                said="no",
+                description="",
+                )
+            db.insert_row(data_line)
             return {
                 sender_id : utils.response_text('Jaka jest Twoja intencja?'),
             }
