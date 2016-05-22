@@ -39,6 +39,11 @@ UPDATE t_intent SET description='%(description_value)s'
 %(where_clause)s
 """
 
+cmd_comm_update = """\
+UPDATE t_intent SET commiter_id='%(commiter_value)s'
+%(where_clause)s
+"""
+
 cmd_insert = """\
 INSERT INTO t_intent(
 %(part_label)s\
@@ -113,6 +118,21 @@ def update_description(id_value, description_value):
         c = conn.cursor()
         cmd = cmd_update % dict(
             description_value=description_value,
+            where_clause=where_clause,
+            )
+        data = c.execute(cmd)
+    conn.commit()
+
+def update_commiter(id_value, commiter_value):
+    if is_db_file():
+        conn = sqlite3.connect(db_file)
+        where_clause = ' WHERE %(label_name)s=%(label_value)d' % dict(
+            label_name=label_id,
+            label_value=id_value,
+            )
+        c = conn.cursor()
+        cmd = cmd_comm_update % dict(
+            commiter_value=commiter_value,
             where_clause=where_clause,
             )
         data = c.execute(cmd)

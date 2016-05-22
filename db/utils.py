@@ -37,3 +37,6 @@ def delete_from_db(id_value):
 
 def update_description(id_value, description_value):
     storage.update_description(id_value, description_value)
+
+def update_commiter(id_value, commiter_value):
+    storage.update_commiter(id_value, commiter_value)
