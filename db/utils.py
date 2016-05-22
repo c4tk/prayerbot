@@ -2,8 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 import random
-import storage
 from labels import label_id
+
+import storage
 
 def fetch_history(attributes, limit = None):
     data = storage.fetch_history()
