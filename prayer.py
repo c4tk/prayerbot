@@ -130,7 +130,7 @@ class PrayerWebhook(object):
         elif event_type == 'delete_prayer':
             # TODO: delete prayer from DB
             id_value = payload["prayer_id"]
-            db.delete_from_db(id_value)
+            db.delete(id_value)
             return {
                 sender_id : utils.response_text('Usunąłem prośbę o modlitwę'),
             }
@@ -139,7 +139,6 @@ class PrayerWebhook(object):
                 user_id=sender_id,
                 commiter_id="",
                 ts=1234,
-                said="no",
                 description="",
                 )
             db.insert_row(data_line)
@@ -147,7 +146,7 @@ class PrayerWebhook(object):
                 sender_id : utils.response_text('Jaka jest Twoja intencja?'),
             }
         elif event_type == 'want_to_pray':
-            prayers = db.fetch_history({"said": "no"}, displayed_prayers_limit)
+            prayers = db.fetch_history({"commiter_id": ""}, displayed_prayers_limit)
             print("Fetched prayers: " + json.dumps(prayers))
             prayer_elements = map(map_prayer, prayers)
             return {
@@ -179,6 +178,7 @@ class PrayerWebhook(object):
                 user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' będzie się modlił w następującej intencji: ' + prayer_description),
             }
         elif event_type == 'did_pray':
+            db.delete(prayer_id)
             return {
                 user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' pomodlił się w Twojej intencji: ' + prayer_description),
                 sender_id : utils.response_text('Użytkownik ' + utils.user_name(user_id) + ' został powiadomiony o tym że pomodliłeś się za niego. Dziękujemy'),
@@ -189,6 +189,7 @@ class PrayerWebhook(object):
                 sender_id : utils.response_text('Użytkownik ' + utils.user_name(user_id) + ' został powiadomiony o tym że pamiętasz o nim w modlitwie'),
             }
         elif event_type == 'give_up':
+            db.update_commiter(prayer_id, '')
             return {
                 sender_id : utils.response_text('Dziękujemy za chęć modlitwy. Użytkownik ' + utils.user_name(user_id) + ' nie zostanie powiadomiony o Twojej rezygnacji'),
             }

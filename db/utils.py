@@ -32,7 +32,7 @@ def fetch(id_value):
 def insert_row(data_line, conn=None):
     storage.insert_row(data_line, conn=conn)
 
-def delete_from_db(id_value):
+def delete(id_value):
     storage.delete_from_db(id_value)
 
 def update_description(id_value, description_value):

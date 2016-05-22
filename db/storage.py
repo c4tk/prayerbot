@@ -21,12 +21,12 @@ conn = psycopg2.connect(
 )
 
 data = [
-    {label_id: 12, "user_id": "1099770976753951", "description": "Potrzebuję modlitwy w intencji mojej mamy", "ts": 1412412331, "said": "no", "commiter_id": "1099770976753951", },
-    {label_id: 13, "user_id": "1099770976753951", "description": "O powrót do zdrowia", "ts": 121312313, "said": "no", "commiter_id": "", },
-    {label_id: 15, "user_id": "1209178385783730", "description": "O rozeznanie drogi", "ts": 121312312, "said": "no", "commiter_id": '', },
-    {label_id: 16, "user_id": "10208414992228182", "description": "O Światowe Dni Młodzieży", "ts": 121312313, "said": "no", "commiter_id": "1209178385783730", },
-    {label_id: 17, "user_id": "10208414992228182", "description": "W intencji Bogu wiadomej", "ts": 121312313, "said": "no", "commiter_id": "1099770976753951", },
-    {label_id: 18, "user_id": "215380638847054", "description": "W intencji Bogu wiadomej", "ts": 121312313, "said": "yes", "commiter_id": '', },
+    {label_id: 12, "user_id": "1099770976753951", "description": "Potrzebuję modlitwy w intencji mojej mamy", "ts": 1412412331, "commiter_id": "1099770976753951", },
+    {label_id: 13, "user_id": "1099770976753951", "description": "O powrót do zdrowia", "ts": 121312313, "commiter_id": "", },
+    {label_id: 15, "user_id": "1209178385783730", "description": "O rozeznanie drogi", "ts": 121312312, "commiter_id": '', },
+    {label_id: 16, "user_id": "10208414992228182", "description": "O Światowe Dni Młodzieży", "ts": 121312313, "commiter_id": "1209178385783730", },
+    {label_id: 17, "user_id": "10208414992228182", "description": "W intencji Bogu wiadomej", "ts": 121312313, "commiter_id": "1099770976753951", },
+    {label_id: 18, "user_id": "215380638847054", "description": "W intencji Bogu wiadomej", "ts": 121312313, "commiter_id": '', },
 ]
 
 cmd_create = """\
@@ -34,7 +34,6 @@ CREATE TABLE IF NOT EXISTS t_intent(
 user_id text,
 description text,
 ts integer,
-said text,
 commiter_id text
 )
 """
@@ -65,7 +64,6 @@ INSERT INTO t_intent(
 user_id,
 description,
 ts,
-said,
 commiter_id
 )
 VALUES
@@ -74,7 +72,6 @@ VALUES
 '%(user_id)s',
 '%(description)s',
 %(ts)d,
-'%(said)s',
 '%(commiter_id)s'
 )
 """
