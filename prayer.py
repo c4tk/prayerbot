@@ -121,11 +121,16 @@ class PrayerWebhook(object):
     def handle_user_event(sender_id, event_type, payload):
         if event_type == 'update_prayer':
             # TODO: update prayer in DB
+            id_value = payload["prayer_id"]
+            description_value = payload["description"]
+            db.update_description(id_value, description_value)
             return {
                 sender_id : utils.response_text('Zostaniesz poinformowany gdy ktoś będzie chciał się za Ciebie pomodlić'),
             }
         elif event_type == 'delete_prayer':
             # TODO: delete prayer from DB
+            id_value = payload["prayer_id"]
+            db.delete_from_db(id_value)
             return {
             }
         elif event_type == 'pray_for_me':

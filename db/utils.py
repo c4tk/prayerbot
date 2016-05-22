@@ -34,3 +34,6 @@ def insert_row(data_line, conn=None):
 
 def delete_from_db(id_value):
     storage.delete_from_db(id_value)
+
+def update_description(id_value, description_value):
+    storage.update_description(id_value, description_value)
