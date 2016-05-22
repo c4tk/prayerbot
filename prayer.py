@@ -13,7 +13,7 @@ class PrayerWebhook(object):
     @staticmethod
     def handle_message(sender, message):
         response = None
-        text = message['text']
+        text = message['text'].encode('utf-8')
         sender_id = sender['id']
         initialized_prayers = db.fetch_history({"user_id": sender_id, "description": ""})
         if initialized_prayers != []:
