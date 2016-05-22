@@ -25,8 +25,9 @@ commiter_id text
 """
 
 cmd_select = """\
-SELECT %s, * FROM t_intent
-""" % label_id
+SELECT %(label_name)s, * FROM t_intent\
+%(where_clause)s
+"""
 
 cmd_insert = """\
 INSERT INTO t_intent(
@@ -59,12 +60,23 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-def fetch_from_db():
+def fetch_from_db(id_value=None):
     if is_db_file():
         conn = sqlite3.connect(db_file)
         conn.row_factory = dict_factory
+        if id_value is None:
+            where_clause = ''
+        else:
+            where_clause = ' WHERE %(label_name)s=%(label_value)d' % dict(
+                label_name=label_id,
+                label_value=id_value,
+                )
         c = conn.cursor()
-        data = c.execute(cmd_select)
+        cmd = cmd_select % dict(
+            label_name=label_id,
+            where_clause=where_clause,
+            )
+        data = c.execute(cmd)
     return data.fetchall()
 
 def insert_row(data_line, conn=None):
