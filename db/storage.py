@@ -30,7 +30,7 @@ SELECT %s, * FROM t_intent
 
 cmd_insert = """\
 INSERT INTO t_intent(
-%(label_name)s,
+%(part_label)s\
 user_id,
 description,
 ts,
@@ -39,7 +39,7 @@ commiter_id
 )
 VALUES
 (
-%(label_value)d,
+%(part_value)s\
 '%(user_id)s',
 '%(description)s',
 %(ts)d,
@@ -74,8 +74,20 @@ def insert_row(data_line, conn=None):
     else:
         is_opened = 0
     c = conn.cursor()
-    data_line['label_name'] = label_id
-    data_line['label_value'] = data_line[label_id]
+    if label_id in data_line:
+        part_label = '%(label_name)s,\n' % dict(
+            label_name=label_id,
+            )
+        part_value = '%(label_value)d,\n' % dict(
+            label_value=data_line[label_id],
+            )
+    else:
+        part_label = ''
+        part_value = ''
+    data_line.update(dict(
+        part_label=part_label,
+        part_value=part_value,
+        ))
     cmd = cmd_insert % data_line
     c.execute(cmd)
     conn.commit()
