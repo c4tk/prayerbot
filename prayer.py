@@ -132,6 +132,7 @@ class PrayerWebhook(object):
             id_value = payload["prayer_id"]
             db.delete_from_db(id_value)
             return {
+                sender_id : utils.response_text('Usunąłem prośbę o modlitwę'),
             }
         elif event_type == 'pray_for_me':
             data_line = dict(
