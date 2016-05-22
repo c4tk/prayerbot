@@ -29,6 +29,11 @@ SELECT %(label_name)s, * FROM t_intent\
 %(where_clause)s
 """
 
+cmd_delete = """\
+DELETE FROM t_intent\
+%(where_clause)s
+"""
+
 cmd_insert = """\
 INSERT INTO t_intent(
 %(part_label)s\
@@ -78,6 +83,20 @@ def fetch_from_db(id_value=None):
             )
         data = c.execute(cmd)
     return data.fetchall()
+
+def delete_from_db(id_value):
+    if is_db_file():
+        conn = sqlite3.connect(db_file)
+        where_clause = ' WHERE %(label_name)s=%(label_value)d' % dict(
+            label_name=label_id,
+            label_value=id_value,
+            )
+        c = conn.cursor()
+        cmd = cmd_delete % dict(
+            where_clause=where_clause,
+            )
+        data = c.execute(cmd)
+    conn.commit()
 
 def insert_row(data_line, conn=None):
     if conn is None:
