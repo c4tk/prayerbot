@@ -173,7 +173,7 @@ class PrayerWebhook(object):
         prayer_description = prayer['description'].encode("utf-8")
 
         if event_type == 'i_pray':
-            db.update_commiter(id_value, sender_id)
+            db.update_commiter(prayer_id, sender_id)
             return {
                 sender_id : utils.response_text('Zostałeś zapisany na modlitwę w intencji użytkownika ' + utils.user_name(user_id)),
                 user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' będzie się modlił w następującej intencji: ' + prayer_description),
