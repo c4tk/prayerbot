@@ -30,11 +30,9 @@ def response_elements(elements):
         }
     })
 
-
 def get_user_data(user_id):
     access_token = os.environ.get('ACCESS_TOKEN')
     return requests.get('https://graph.facebook.com'+ GRAPH_API_URL + str(user_id), params={'access_token': access_token }).json()
-
 
 def user_name(user_id):
     data = get_user_data(user_id)

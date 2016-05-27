@@ -15,7 +15,7 @@ flask.Provider(app, os.environ.get('RAYGUN_APIKEY')).attach()
 ###
 
 def setup():
-    api.request("/me/subscribed_apps")
+    api.post("/me/subscribed_apps")
 
 @app.route('/webhook')
 def challenge_webhook():
@@ -40,11 +40,11 @@ def handle_webhook():
         if 'message' in event:
             response_body = webhook.handle_message(event['sender'], event['message'])
             if response_body:
-                api.request("/me/messages", response_body)
+                api.post("/me/messages", response_body)
         elif 'postback' in event:
             response_callbacks = webhook.handle_postback(event['sender'], event['postback'])
             for response_callback in response_callbacks:
-                api.request("/me/messages", response_callback)
+                api.post("/me/messages", response_callback)
     return "OK"
 
 setup()

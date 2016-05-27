@@ -2,9 +2,10 @@
 
 import httplib
 import os
+import requests
 import sys
 
-GRAPH_API = "graph.facebook.com"
+GRAPH_API = "https://graph.facebook.com"
 GRAPH_API_URL = "/v2.6"
 
 class MessengerApi:
@@ -14,17 +15,15 @@ class MessengerApi:
             print("Environment variable ACCESS_TOKEN is not set")
             sys.exit(2)
 
-    def request(self, path, body = None):
-        # TODO: make connection persistent and init in __init__
-        conn = httplib.HTTPSConnection(GRAPH_API, 443)
-        url = GRAPH_API_URL + path + "?access_token=" + self.access_token
-        print("* HTTP request: POST " + GRAPH_API + url)
+    def post(self, path, body = None):
+        print("* HTTP request: POST " + path)
         if body != None:
+            headers = { 'content-type': 'application/json' }
             print("  body: " + body)
-        conn.request("POST", url, body, {"Content-type": "application/json"})
-        response = conn.getresponse()
-        print("* HTTP response: " + str(response.status) + " " + response.reason)
-        response_data = response.read()
-        if response_data != '':
-            print("  body: " + response_data)
-        conn.close()
+        else:
+            headers = {}
+        response = requests.post(GRAPH_API + GRAPH_API_URL + path, params = { 'access_token': self.access_token }, headers = headers, data = body)
+        print("* HTTP response: " + str(response.status_code))
+        if response.text != '':
+            print("  body: " + response.text)
+        return response
