@@ -4,7 +4,7 @@
 import json
 import db.utils as db
 import tools.systools as systools
-import messenger.utils as utils
+import facebook.utils as utils
 from db.labels import label_id
 
 displayed_prayers_limit = 5

@@ -5,15 +5,24 @@ import os
 import requests
 import sys
 
-GRAPH_API = "https://graph.facebook.com"
-GRAPH_API_URL = "/v2.6"
+GRAPH_API = "https://graph.facebook.com/"
 
-class MessengerApi:
-    def __init__(self):
+class FacebookApi:
+    def __init__(self, version = "v2.6"):
         self.access_token = os.environ.get('ACCESS_TOKEN')
+        self.version = version
+        self.base_url = GRAPH_API + self.version
         if self.access_token == None:
             print("Environment variable ACCESS_TOKEN is not set")
             sys.exit(2)
+
+    def get(self, path):
+        print("* HTTP request: GET " + path)
+        response = requests.post(self.base_url + path, params = { 'access_token': self.access_token })
+        print("* HTTP response: " + str(response.status_code))
+        if response.text != '':
+            print("  body: " + response.text)
+        return response
 
     def post(self, path, body = None):
         print("* HTTP request: POST " + path)
@@ -22,8 +31,9 @@ class MessengerApi:
             print("  body: " + body)
         else:
             headers = {}
-        response = requests.post(GRAPH_API + GRAPH_API_URL + path, params = { 'access_token': self.access_token }, headers = headers, data = body)
+        response = requests.post(self.base_url + path, params = { 'access_token': self.access_token }, headers = headers, data = body)
         print("* HTTP response: " + str(response.status_code))
         if response.text != '':
             print("  body: " + response.text)
         return response
+
