@@ -1,0 +1,4 @@
+---
+applications:
+- name: prayerbot
+  memory: 256M
