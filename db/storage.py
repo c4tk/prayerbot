@@ -91,7 +91,7 @@ def fetch_from_db(id_value=None):
         data = c.execute(cmd)
     return data.fetchall()
 
-def delete_from_db(id_value):
+def update_db(id_value, cmd, args):
     if is_db_file():
         conn = sqlite3.connect(db_file)
         where_clause = ' WHERE %(label_name)s=%(label_value)d' % dict(
@@ -99,41 +99,18 @@ def delete_from_db(id_value):
             label_value=id_value,
             )
         c = conn.cursor()
-        cmd = cmd_delete % dict(
-            where_clause=where_clause,
-            )
-        data = c.execute(cmd)
+        args.update({'where_clause': where_clause})
+        data = c.execute(cmd % args)
     conn.commit()
+
+def delete_from_db(id_value):
+    update_db(id_value, cmd_delete, dict())
 
 def update_description(id_value, description_value):
-    if is_db_file():
-        conn = sqlite3.connect(db_file)
-        where_clause = ' WHERE %(label_name)s=%(label_value)d' % dict(
-            label_name=label_id,
-            label_value=id_value,
-            )
-        c = conn.cursor()
-        cmd = cmd_update % dict(
-            description_value=description_value,
-            where_clause=where_clause,
-            )
-        data = c.execute(cmd)
-    conn.commit()
+    update_db(id_value, cmd_update, dict(description_value=description_value))
 
 def update_commiter(id_value, commiter_value):
-    if is_db_file():
-        conn = sqlite3.connect(db_file)
-        where_clause = ' WHERE %(label_name)s=%(label_value)d' % dict(
-            label_name=label_id,
-            label_value=id_value,
-            )
-        c = conn.cursor()
-        cmd = cmd_comm_update % dict(
-            commiter_value=commiter_value,
-            where_clause=where_clause,
-            )
-        data = c.execute(cmd)
-    conn.commit()
+    update_db(id_value, cmd_comm_update, dict(commiter_value=commiter_value))
 
 def insert_row(data_line, conn=None):
     if conn is None:
@@ -170,7 +147,3 @@ if not is_db_file():
         for data_line in data:
             insert_row(data_line, conn=conn)
     conn.commit()
-
-def fetch_history():
-    data = fetch_from_db()
-    return data

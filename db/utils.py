@@ -7,7 +7,7 @@ from labels import label_id
 import storage
 
 def fetch_history(attributes, limit=None):
-    data = storage.fetch_history()
+    data = storage.fetch_from_db()
     filtered_data = []
     for prayer in data:
         match_all = True
