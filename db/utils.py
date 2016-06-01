@@ -4,7 +4,7 @@
 import random
 from labels import label_id
 
-import storage
+import sqlite_storage as storage
 
 def fetch_history(attributes, limit=None):
     data = storage.fetch_from_db()

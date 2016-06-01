@@ -9,6 +9,13 @@ from db.labels import label_id
 
 displayed_prayers_limit = 5
 
+
+##TODO: remove test
+#from db.storage import PostgresStorage
+#storage = PostgresStorage()
+#storage.test()
+##END of block to remove
+
 class PrayerWebhook(object):
     @staticmethod
     def handle_message(sender, message):
