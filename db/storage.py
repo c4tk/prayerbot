@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import os
+import psycopg2
 import sqlite3
 from labels import label_id
 
