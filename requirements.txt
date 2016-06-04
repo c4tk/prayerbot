@@ -12,6 +12,7 @@ requests
 # Testing
 # ----------------------
 mock
+pytest-flask
 
 # ----------------------
 # Production Server
