@@ -17,7 +17,7 @@ flask.Provider(app, os.environ.get('RAYGUN_APIKEY')).attach()
 class WebhookAPI(MethodView):
 
     @property
-    def api():
+    def api(self):
         if not hasattr(self, '_api'):
             self._api = FacebookApi()
         return self._api
