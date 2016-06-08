@@ -2,10 +2,11 @@
 # -*- coding: UTF-8 -*-
 
 import json
-import db.utils as db
 import tools.systools as systools
 import facebook.utils as utils
-from db.labels import label_id
+from dbms.rdb import db
+from dbms.models import Intent
+
 
 displayed_prayers_limit = 5
 
@@ -23,7 +24,8 @@ class PrayerWebhook(object):
         text = message['text'].encode('utf-8')
         lower_text = text.lower()
         sender_id = sender['id']
-        initialized_prayers = db.fetch_history({"user_id": sender_id, "description": ""})
+        # initialized_prayers = db.fetch_history({"user_id": sender_id, "description": ""})
+        initialized_prayers = Intent.query.filter_by(user_id = sender_id).all()
         if initialized_prayers != []:
             prayer = initialized_prayers[0]
             response_message = utils.response_buttons(
@@ -46,7 +48,8 @@ class PrayerWebhook(object):
                 'message': response_message
             })
         elif lower_text in ['help', 'pomoc'] or 'modl' in lower_text or 'pray' in lower_text:
-            commited_prayers = db.fetch_history({"commiter_id": sender_id})
+            # commited_prayers = db.fetch_history({"commiter_id": sender_id})
+            commited_prayers = Intent.query.filter_by(commiter_id=sender_id)
             options = [
                 {
                     "type":"postback",
@@ -108,37 +111,49 @@ class PrayerWebhook(object):
             # TODO: update prayer in DB
             id_value = payload["prayer_id"]
             description_value = payload["description"]
-            db.update_description(id_value, description_value)
+            #db.update_description(id_value, description_value)
+            intent = Intent.query.filter_by(id=id_value).first()
+            intent.description = description_value
+            db.session.commit()
             return {
                 sender_id : utils.response_text('Zostaniesz poinformowany gdy ktoś będzie chciał się za Ciebie pomodlić'),
             }
         elif event_type == 'delete_prayer':
             # TODO: delete prayer from DB
             id_value = payload["prayer_id"]
-            db.delete(id_value)
+            #db.delete(id_value)
+            intent = Intent.query.filter_by(id=id_value).first()
+            db.session.delete(intent)
+            db.session.commit()
             return {
                 sender_id : utils.response_text('Usunąłem prośbę o modlitwę'),
             }
         elif event_type == 'pray_for_me':
-            data_line = dict(
-                user_id=sender_id,
-                commiter_id="",
-                ts=1234,
-                description="",
-                )
-            db.insert_row(data_line)
+            # data_line = dict(
+            #     user_id=sender_id,
+            #     commiter_id="",
+            #     ts=1234,
+            #     description="",
+            #     )
+            # db.insert_row(data_line)
+            intent = Intent(sender_id, "")
+            intent.ts = 1234
+            db.session.add(intent)
+            db.session.commit()
             return {
                 sender_id : utils.response_text('Jaka jest Twoja intencja?'),
             }
         elif event_type == 'want_to_pray':
-            prayers = db.fetch_history({"commiter_id": ""}, displayed_prayers_limit)
+            # prayers = db.fetch_history({"commiter_id": ""}, displayed_prayers_limit)
+            prayers = Intent.query.all().limit(displayed_prayers_limit)
             print("Fetched prayers: " + json.dumps(prayers))
             prayer_elements = map(map_prayer, prayers)
             return {
                 sender_id : utils.response_elements(prayer_elements),
             }
         elif event_type == 'prayers':
-            commited_prayers = db.fetch_history({"commiter_id": sender_id})
+            # commited_prayers = db.fetch_history({"commiter_id": sender_id})
+            commited_prayers = Intent.query.filter_by(commiter_id=sender_id)
             prayer_elements = map(map_said_prayer, commited_prayers)
             if prayer_elements == []:
                 return {
@@ -153,17 +168,22 @@ class PrayerWebhook(object):
     def handle_prayer_event(sender_id, event_type, payload):
         user_id = payload['user_id']
         prayer_id = payload['prayer_id']
-        prayer = db.fetch(prayer_id)
+        # prayer = db.fetch(prayer_id)
+        prayer = Intent.query.filter_by(id=prayer_id).one_or_none()
         prayer_description = prayer['description'].encode("utf-8")
 
         if event_type == 'i_pray':
-            db.update_commiter(prayer_id, sender_id)
+            # db.update_commiter(prayer_id, sender_id)
+            prayer.commiter_id=sender_id
+            db.session.commit()
             return {
                 sender_id : utils.response_text('Zostałeś zapisany na modlitwę w intencji użytkownika ' + utils.user_name(user_id)),
                 user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' będzie się modlił w Twojej następującej intencji: ' + prayer_description),
             }
         elif event_type == 'did_pray':
-            db.delete(prayer_id)
+            # db.delete(prayer_id)
+            db.session.delete(prayer)
+            db.session.commit()
             return {
                 user_id : utils.response_text('Użytkownik ' + utils.user_name(sender_id) + ' pomodlił się w Twojej intencji: ' + prayer_description),
                 sender_id : utils.response_text('Użytkownik ' + utils.user_name(user_id) + ' został powiadomiony o tym, że pomodliłeś się za niego. Dziękujemy'),
@@ -174,14 +194,16 @@ class PrayerWebhook(object):
                 sender_id : utils.response_text('Użytkownik ' + utils.user_name(user_id) + ' został powiadomiony o tym, że pamiętasz o nim w modlitwie'),
             }
         elif event_type == 'give_up':
-            db.update_commiter(prayer_id, '')
+            # db.update_commiter(prayer_id, '')
+            prayer.commiter_id=''
+            db.session.commit()
             return {
                 sender_id : utils.response_text('Dziękujemy za chęć modlitwy. Użytkownik ' + utils.user_name(user_id) + ' nie zostanie powiadomiony o Twojej rezygnacji'),
             }
 
 def map_callback(callback):
-    sender_id = callback[0] 
-    response_message = callback[1] 
+    sender_id = callback[0]
+    response_message = callback[1]
     return json.dumps({
         'recipient': { 'id' : sender_id },
         'message': response_message

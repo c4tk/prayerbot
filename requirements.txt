@@ -30,3 +30,9 @@ raygun4py
 # PostgreSQL
 # ----------------------
 psycopg2
+
+# ----------------------
+# ORM
+# ----------------------
+SQLAlchemy
+Flask-SQLAlchemy
