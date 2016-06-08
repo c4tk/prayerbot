@@ -2,13 +2,13 @@
 
 import os
 from flask import Flask, request
+from flask.ext.babel import Babel
 from flask.views import MethodView
 from facebook.api import FacebookApi
 from prayer import PrayerWebhook as webhook
-from raygun4py.middleware import flask
 
 app = Flask(__name__)
-flask.Provider(app, os.environ.get('RAYGUN_APIKEY')).attach()
+babel = Babel(app)
 
 ###
 # Routing for your application.

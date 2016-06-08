@@ -1,0 +1,133 @@
+# Translations template for PROJECT.
+# Copyright (C) 2016 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2016-06-08 22:26+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.3.4\n"
+
+#: prayer.py:31
+#, python-format
+msgid "You requested a prayer for: %(value)s?"
+msgstr ""
+
+#: prayer.py:35
+msgid "Yes"
+msgstr ""
+
+#: prayer.py:40
+msgid "No"
+msgstr ""
+
+#: prayer.py:49
+msgid "help"
+msgstr ""
+
+#: prayer.py:49
+msgid "pray"
+msgstr ""
+
+#: prayer.py:54
+msgid "Please pray for me"
+msgstr ""
+
+#: prayer.py:59
+msgid "I want to pray"
+msgstr ""
+
+#: prayer.py:66
+msgid "Who do I pray for?"
+msgstr ""
+
+#: prayer.py:70
+msgid "Please choose what do you need?"
+msgstr ""
+
+#: prayer.py:85
+msgid ""
+"Sorry but I don't understand you.\n"
+"Type 'help' to get additional information."
+msgstr ""
+
+#: prayer.py:114
+msgid "You'll be notified when somebody wants to pray for you"
+msgstr ""
+
+#: prayer.py:121
+msgid "I've deleted a prayer request"
+msgstr ""
+
+#: prayer.py:132
+msgid "What is your prayer request?"
+msgstr ""
+
+#: prayer.py:146
+msgid "There're no prayer requests"
+msgstr ""
+
+#: prayer.py:163
+#, python-format
+msgid "You're subscribed for the prayer request from user %(name)s"
+msgstr ""
+
+#: prayer.py:164
+#, python-format
+msgid "User %(name)s will be praying in your following request: %(desc)s"
+msgstr ""
+
+#: prayer.py:169
+#, python-format
+msgid "User %(name)s has prayed in your request: %(desc)s"
+msgstr ""
+
+#: prayer.py:170
+#, python-format
+msgid "User %(name)s has been notified that you've prayed for him/her. Thank you"
+msgstr ""
+
+#: prayer.py:174
+#, python-format
+msgid ""
+"User %(name)s wants to ensure you about his prayer in the following "
+"request: %(desc)s"
+msgstr ""
+
+#: prayer.py:175
+#, python-format
+msgid "User %(name)s has been ensured that you pray for him"
+msgstr ""
+
+#: prayer.py:180
+#, python-format
+msgid ""
+"Thank you for your will of praying. User %(name)s won't be notified about"
+" you giving up."
+msgstr ""
+
+#: prayer.py:199
+msgid "I am praying"
+msgstr ""
+
+#: prayer.py:214
+msgid "I've prayed"
+msgstr ""
+
+#: prayer.py:219
+msgid "Ensure about your prayer"
+msgstr ""
+
+#: prayer.py:224
+msgid "Stop your prayer"
+msgstr ""
+
