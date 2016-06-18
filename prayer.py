@@ -25,7 +25,7 @@ class PrayerWebhook(object):
         lower_text = text.lower()
         sender_id = sender['id']
         # initialized_prayers = db.fetch_history({"user_id": sender_id, "description": ""})
-        initialized_prayers = Intent.query.filter_by(user_id = sender_id).all()
+        initialized_prayers = Intent.query.filter_by(user_id == sender_id, description == "").all()
         if initialized_prayers != []:
             prayer = initialized_prayers[0]
             response_message = utils.response_buttons(
@@ -49,7 +49,7 @@ class PrayerWebhook(object):
             })
         elif lower_text in ['help', 'pomoc'] or 'modl' in lower_text or 'pray' in lower_text:
             # commited_prayers = db.fetch_history({"commiter_id": sender_id})
-            commited_prayers = Intent.query.filter_by(commiter_id=sender_id)
+            commited_prayers = Intent.query.filter_by(commiter_id == sender_id)
             options = [
                 {
                     "type":"postback",
@@ -112,7 +112,7 @@ class PrayerWebhook(object):
             id_value = payload["prayer_id"]
             description_value = payload["description"]
             #db.update_description(id_value, description_value)
-            intent = Intent.query.filter_by(id=id_value).first()
+            intent = Intent.query.filter_by(id == id_value).first()
             intent.description = description_value
             db.session.commit()
             return {
@@ -122,7 +122,7 @@ class PrayerWebhook(object):
             # TODO: delete prayer from DB
             id_value = payload["prayer_id"]
             #db.delete(id_value)
-            intent = Intent.query.filter_by(id=id_value).first()
+            intent = Intent.query.filter_by(id == id_value).first()
             db.session.delete(intent)
             db.session.commit()
             return {
@@ -153,7 +153,7 @@ class PrayerWebhook(object):
             }
         elif event_type == 'prayers':
             # commited_prayers = db.fetch_history({"commiter_id": sender_id})
-            commited_prayers = Intent.query.filter_by(commiter_id=sender_id)
+            commited_prayers = Intent.query.filter_by(commiter_id == sender_id)
             prayer_elements = map(map_said_prayer, commited_prayers)
             if prayer_elements == []:
                 return {
@@ -169,7 +169,7 @@ class PrayerWebhook(object):
         user_id = payload['user_id']
         prayer_id = payload['prayer_id']
         # prayer = db.fetch(prayer_id)
-        prayer = Intent.query.filter_by(id=prayer_id).one_or_none()
+        prayer = Intent.query.filter_by(id == prayer_id).one_or_none()
         prayer_description = prayer['description'].encode("utf-8")
 
         if event_type == 'i_pray':
