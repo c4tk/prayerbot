@@ -2,8 +2,8 @@
 
 import os
 from flask import Flask, request
-from flask.ext.babel import Babel
 from flask.views import MethodView
+from flask_babel import Babel
 from facebook.api import FacebookApi
 from prayer import PrayerWebhook as webhook
 from dbms.rdb import db

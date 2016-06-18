@@ -2,11 +2,11 @@
 # -*- coding: UTF-8 -*-
 
 import json
-import tools.systools as systools
 import facebook.utils as utils
-from flask.ext.babel import gettext
+import tools.systools as systools
 from dbms.rdb import db
 from dbms.models import Intent
+from translations.user import user_gettext
 
 displayed_prayers_limit = 5
 
@@ -29,16 +29,16 @@ class PrayerWebhook(object):
         if initialized_prayers != []:
             prayer = initialized_prayers[0]
             response_message = utils.response_buttons(
-                gettext(u"You requested a prayer for: %(value)s?", value=text),
+                user_gettext(sender_id, u"You requested a prayer for: %(value)s?", value=text),
                 [
                     {
                         "type":"postback",
-                        "title": gettext(u"Yes"),
+                        "title": user_gettext(sender_id, u"Yes"),
                         "payload": json.dumps({"user_event": "update_prayer", "prayer_id": prayer.id, "description": text})
                     },
                     {
                         "type":"postback",
-                        "title": gettext(u"No"),
+                        "title": user_gettext(sender_id, u"No"),
                         "payload": json.dumps({"user_event": "delete_prayer", "prayer_id": prayer.id})
                     },
                 ]
@@ -47,29 +47,29 @@ class PrayerWebhook(object):
                 'recipient': { 'id' : sender_id },
                 'message': response_message
             })
-        elif lower_text in gettext(u'help') or gettext(u'pray') in lower_text:
+        elif lower_text in user_gettext(sender_id, u'help') or user_gettext(sender_id, u'pray') in lower_text:
             # commited_prayers = db.fetch_history({"commiter_id": sender_id})
             commited_prayers = Intent.query.filter_by(commiter_id = sender_id)
             options = [
                 {
                     "type":"postback",
-                    "title": gettext(u"Please pray for me"),
+                    "title": user_gettext(sender_id, u"Please pray for me"),
                     "payload": json.dumps({"user_event": "pray_for_me"})
                 },
                 {
                     "type":"postback",
-                    "title": gettext(u"I want to pray"),
+                    "title": user_gettext(sender_id, u"I want to pray"),
                     "payload": json.dumps({"user_event": "want_to_pray"})
                 },
             ]
             if commited_prayers != []:
                 options.append({
                     "type":"postback",
-                    "title": gettext(u"Who do I pray for?"),
+                    "title": user_gettext(sender_id, u"Who do I pray for?"),
                     "payload": json.dumps({"user_event": "prayers"})
                 })
             response_message = utils.response_buttons(
-                gettext(u"Please choose what do you need?"),
+                user_gettext(sender_id, u"Please choose what do you need?"),
                 options
             )
             response = json.dumps({
@@ -84,7 +84,7 @@ class PrayerWebhook(object):
                 'message': response_message
             })
         else:
-            response_message = utils.response_text(gettext(u"Sorry but I don't understand you.\nType 'help' to get additional information."))
+            response_message = utils.response_text(user_gettext(sender_id, u"Sorry but I don't understand you.\nType 'help' to get additional information."))
             response = json.dumps({
                 'recipient': { 'id' : sender_id },
                 'message': response_message
@@ -116,7 +116,7 @@ class PrayerWebhook(object):
             intent.description = description_value
             db.session.commit()
             return {
-                sender_id : utils.response_text(gettext(u"You'll be notified when somebody wants to pray for you")),
+                sender_id : utils.response_text(user_gettext(sender_id, u"You'll be notified when somebody wants to pray for you")),
             }
         elif event_type == 'delete_prayer':
             # TODO: delete prayer from DB
@@ -126,7 +126,7 @@ class PrayerWebhook(object):
             db.session.delete(intent)
             db.session.commit()
             return {
-                sender_id : utils.response_text(gettext(u"I've deleted a prayer request")),
+                sender_id : utils.response_text(user_gettext(sender_id, u"I've deleted a prayer request")),
             }
         elif event_type == 'pray_for_me':
             # data_line = dict(
@@ -141,7 +141,7 @@ class PrayerWebhook(object):
             db.session.add(intent)
             db.session.commit()
             return {
-                sender_id : utils.response_text(gettext(u"What is your prayer request?")),
+                sender_id : utils.response_text(user_gettext(sender_id, u"What is your prayer request?")),
             }
         elif event_type == 'want_to_pray':
             # prayers = db.fetch_history({"commiter_id": ""}, displayed_prayers_limit)
@@ -157,7 +157,7 @@ class PrayerWebhook(object):
             prayer_elements = map(map_said_prayer, commited_prayers)
             if prayer_elements == []:
                 return {
-                    sender_id : utils.response_text(gettext(u"There're no prayer requests")),
+                    sender_id : utils.response_text(user_gettext(sender_id, u"There're no prayer requests")),
                 }
             else:
                 return {
@@ -177,28 +177,28 @@ class PrayerWebhook(object):
             prayer.commiter_id=sender_id
             db.session.commit()
             return {
-                sender_id : utils.response_text(gettext(u"You're subscribed for the prayer request from user %(name)s", name=utils.user_name(user_id))),
-                user_id : utils.response_text(gettext(u"User %(name)s will be praying in your following request: %(desc)s", name=utils.user_name(sender_id), desc=prayer_description)),
+                sender_id : utils.response_text(user_gettext(sender_id, u"You're subscribed for the prayer request from user %(name)s", name=utils.user_name(user_id))),
+                user_id : utils.response_text(user_gettext(user_id, u"User %(name)s will be praying in your following request: %(desc)s", name=utils.user_name(sender_id), desc=prayer_description)),
             }
         elif event_type == 'did_pray':
             # db.delete(prayer_id)
             db.session.delete(prayer)
             db.session.commit()
             return {
-                user_id : utils.response_text(gettext('User %(name)s has prayed in your request: %(desc)s', name=utils.user_name(sender_id), desc=prayer_description)),
-                sender_id : utils.response_text(gettext('User %(name)s has been notified that you\'ve prayed for him/her. Thank you', name=utils.user_name(user_id))),
+                user_id : utils.response_text(user_gettext(user_id, 'User %(name)s has prayed in your request: %(desc)s', name=utils.user_name(sender_id), desc=prayer_description)),
+                sender_id : utils.response_text(user_gettext(sender_id, 'User %(name)s has been notified that you\'ve prayed for him/her. Thank you', name=utils.user_name(user_id))),
             }
         elif event_type == 'send_message':
             return {
-                user_id : utils.response_text(gettext('User %(name)s wants to ensure you about his prayer in the following request: %(desc)s', name=utils.user_name(sender_id), desc=prayer_description)),
-                sender_id : utils.response_text(gettext('User %(name)s has been ensured that you pray for him', name=utils.user_name(user_id))),
+                user_id : utils.response_text(user_gettext(user_id, 'User %(name)s wants to ensure you about his prayer in the following request: %(desc)s', name=utils.user_name(sender_id), desc=prayer_description)),
+                sender_id : utils.response_text(user_gettext(sender_id, 'User %(name)s has been ensured that you pray for him', name=utils.user_name(user_id))),
             }
         elif event_type == 'give_up':
             # db.update_commiter(prayer_id, '')
             prayer.commiter_id=''
             db.session.commit()
             return {
-                sender_id : utils.response_text(gettext('Thank you for your will of praying. User %(name)s won\'t be notified about you giving up.', name=utils.user_name(user_id))),
+                sender_id : utils.response_text(user_gettext(sender_id, 'Thank you for your will of praying. User %(name)s won\'t be notified about you giving up.', name=utils.user_name(user_id))),
             }
 
 def map_callback(callback):
@@ -217,7 +217,7 @@ def map_prayer(prayer):
         "buttons": [
             {
                 "type": "postback",
-                "title": gettext("I am praying"),
+                "title": user_gettext(user_id, "I am praying"),
                 "payload": json.dumps({"prayer_event": "i_pray", "prayer_id": prayer[label_id], "user_id": user_id})
             }
         ],
@@ -232,17 +232,17 @@ def map_said_prayer(prayer):
         "buttons": [
             {
                 "type": "postback",
-                "title": gettext("I've prayed"),
+                "title": user_gettext(user_id, "I've prayed"),
                 "payload": json.dumps({"prayer_event": "did_pray", "prayer_id": prayer[label_id], "user_id": user_id})
             },
             {
                 "type": "postback",
-                "title": gettext("Ensure about your prayer"),
+                "title": user_gettext(user_id, "Ensure about your prayer"),
                 "payload": json.dumps({"prayer_event": "send_message", "prayer_id": prayer[label_id], "user_id": user_id})
             },
             {
                 "type": "postback",
-                "title": gettext("Stop your prayer"),
+                "title": user_gettext(user_id, "Stop your prayer"),
                 "payload": json.dumps({"prayer_event": "give_up", "prayer_id": prayer[label_id], "user_id": user_id})
             },
         ],
