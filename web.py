@@ -1,6 +1,5 @@
 #!/usr/bin/env python2
 
-import os
 from flask import Flask, request
 from flask.views import MethodView
 from facebook.api import FacebookApi
