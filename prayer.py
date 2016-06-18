@@ -34,12 +34,12 @@ class PrayerWebhook(object):
                     {
                         "type":"postback",
                         "title":"Tak",
-                        "payload": json.dumps({"user_event": "update_prayer", "prayer_id": prayer[label_id], "description": text})
+                        "payload": json.dumps({"user_event": "update_prayer", "prayer_id": prayer.id, "description": text})
                     },
                     {
                         "type":"postback",
                         "title":"Nie",
-                        "payload": json.dumps({"user_event": "delete_prayer", "prayer_id": prayer[label_id]})
+                        "payload": json.dumps({"user_event": "delete_prayer", "prayer_id": prayer.id})
                     },
                 ]
             )
