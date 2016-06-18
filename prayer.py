@@ -145,7 +145,7 @@ class PrayerWebhook(object):
             }
         elif event_type == 'want_to_pray':
             # prayers = db.fetch_history({"commiter_id": ""}, displayed_prayers_limit)
-            prayers = Intent.query.all().limit(displayed_prayers_limit)
+            prayers = Intent.query.limit(displayed_prayers_limit).all()
             print("Fetched prayers: " + json.dumps(prayers))
             prayer_elements = map(map_prayer, prayers)
             return {
