@@ -49,3 +49,15 @@ def get_img_url(user_id):
         return get_user_data(user_id)['profile_pic']
     except Exception as e:
         return 'http://s32.postimg.org/hw25wtznp/def_prof_pic.jpg'
+
+def get_language(user_id):
+    try:
+        return get_user_data(user_id)['locale']
+    except Exception as e:
+        return 'pl_PL'
+
+def get_gender(user_id):
+    try:
+        return get_user_data(user_id)['gender']
+    except Exception as e:
+        return 'male'
