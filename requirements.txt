@@ -1,33 +1,34 @@
 # ----------------------
 # Flask
 # ----------------------
-flask
+flask==0.11.1
 flask-babel
 
 # ----------------------
 # requests
 # ----------------------
-requests
+requests==2.10.0
 
 # ----------------------
 # Testing
 # ----------------------
-mock
-pytest-flask
+mock==2.0.0
+pytest-flask==0.10.0
 
 # ----------------------
 # Production Server
 # ----------------------
-gevent
-gunicorn
-ipdb
-
-# ----------------------
-# RayGun
-# ----------------------
-raygun4py
+gevent==1.1.1
+gunicorn==19.6.0
+ipdb==0.10.1
 
 # ----------------------
 # PostgreSQL
 # ----------------------
-psycopg2
+
+# ----------------------
+# ORM
+# ----------------------
+SQLAlchemy
+Flask-SQLAlchemy
+psycopg2==2.6.1

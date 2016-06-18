@@ -61,7 +61,7 @@ VALUES
 )
 """
 
-db_file = 'intent.db'
+db_file = 'intent.db.old'
 
 def is_db_file():
     return os.path.isfile(db_file)

@@ -18,7 +18,7 @@ class FacebookApi:
 
     def get(self, path):
         print("* HTTP request: GET " + path)
-        response = requests.post(self.base_url + path, params = { 'access_token': self.access_token })
+        response = requests.get(self.base_url + path, params = { 'access_token': self.access_token })
         print("* HTTP response: " + str(response.status_code))
         if response.text != '':
             print("  body: " + response.text)
