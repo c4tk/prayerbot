@@ -55,3 +55,9 @@ def get_language(user_id):
         return get_user_data(user_id)['locale']
     except Exception as e:
         return 'pl_PL'
+
+def get_gender(user_id):
+    try:
+        return get_user_data(user_id)['gender']
+    except Exception as e:
+        return 'male'
