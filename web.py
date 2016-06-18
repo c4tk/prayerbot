@@ -5,10 +5,8 @@ from flask import Flask, request
 from flask.views import MethodView
 from facebook.api import FacebookApi
 from prayer import PrayerWebhook as webhook
-from raygun4py.middleware import flask
 
 app = Flask(__name__)
-flask.Provider(app, os.environ.get('RAYGUN_APIKEY')).attach()
 
 ###
 # Routing for your application.
