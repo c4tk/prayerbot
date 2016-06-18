@@ -146,7 +146,7 @@ class PrayerWebhook(object):
         elif event_type == 'want_to_pray':
             # prayers = db.fetch_history({"commiter_id": ""}, displayed_prayers_limit)
             prayers = Intent.query.limit(displayed_prayers_limit).all()
-            print("Fetched prayers: " + json.dumps(prayers))
+            #print("Fetched prayers: " + json.dumps(prayers))
             prayer_elements = map(map_prayer, prayers)
             return {
                 sender_id : utils.response_elements(prayer_elements),
@@ -170,7 +170,7 @@ class PrayerWebhook(object):
         prayer_id = payload['prayer_id']
         # prayer = db.fetch(prayer_id)
         prayer = Intent.query.filter_by(id = prayer_id).one_or_none()
-        prayer_description = prayer['description'].encode("utf-8")
+        prayer_description = prayer.description.encode("utf-8")
 
         if event_type == 'i_pray':
             # db.update_commiter(prayer_id, sender_id)
@@ -210,40 +210,40 @@ def map_callback(callback):
     })
 
 def map_prayer(prayer):
-    user_id = prayer['user_id']
+    user_id = prayer.user_id
     return {
         "title": utils.user_name(user_id),
-        "subtitle": prayer['description'],
+        "subtitle": prayer.description,
         "buttons": [
             {
                 "type": "postback",
                 "title": "Modlę się",
-                "payload": json.dumps({"prayer_event": "i_pray", "prayer_id": prayer[label_id], "user_id": user_id})
+                "payload": json.dumps({"prayer_event": "i_pray", "prayer_id": prayer.id, "user_id": user_id})
             }
         ],
         "image_url": utils.get_img_url(user_id)
     }
 
 def map_said_prayer(prayer):
-    user_id = prayer['user_id']
+    user_id = prayer.user_id
     return {
         "title": utils.user_name(user_id),
-        "subtitle": prayer['description'],
+        "subtitle": prayer.description,
         "buttons": [
             {
                 "type": "postback",
                 "title": "Pomodliłem się",
-                "payload": json.dumps({"prayer_event": "did_pray", "prayer_id": prayer[label_id], "user_id": user_id})
+                "payload": json.dumps({"prayer_event": "did_pray", "prayer_id": prayer.id, "user_id": user_id})
             },
             {
                 "type": "postback",
                 "title": "Zapewnij o modlitwie",
-                "payload": json.dumps({"prayer_event": "send_message", "prayer_id": prayer[label_id], "user_id": user_id})
+                "payload": json.dumps({"prayer_event": "send_message", "prayer_id": prayer.id, "user_id": user_id})
             },
             {
                 "type": "postback",
                 "title": "Rezygnuję z modlitwy",
-                "payload": json.dumps({"prayer_event": "give_up", "prayer_id": prayer[label_id], "user_id": user_id})
+                "payload": json.dumps({"prayer_event": "give_up", "prayer_id": prayer.id, "user_id": user_id})
             },
         ],
         "image_url": utils.get_img_url(user_id)
