@@ -5,13 +5,11 @@ from flask import Flask, request
 from flask.views import MethodView
 from facebook.api import FacebookApi
 from prayer import PrayerWebhook as webhook
-from raygun4py.middleware import flask
 from dbms.rdb import db
 
 
 def create_app():
     app = Flask(__name__)
-    flask.Provider(app, os.environ.get('RAYGUN_APIKEY')).attach()
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///intent.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
