@@ -5,8 +5,15 @@ from flask import Flask, request
 from flask.views import MethodView
 from facebook.api import FacebookApi
 from prayer import PrayerWebhook as webhook
+from dbms.rdb import db
 
-app = Flask(__name__)
+
+def create_app():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///intent.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
+    return app
 
 ###
 # Routing for your application.
@@ -22,7 +29,7 @@ class WebhookAPI(MethodView):
 
     def get(self, user_id=None):
         """Facebook's API webhook challenge."""
-        
+
         if request.args.get('hub.verify_token') == 'challenge_me':
             challenge = request.args.get('hub.challenge')
             if challenge:
@@ -49,9 +56,9 @@ class WebhookAPI(MethodView):
                     self.api.post("/me/messages", response_callback)
         return "OK"
 
-
+app = create_app()
+app.app_context().push()
 app.add_url_rule('/webhook', view_func=WebhookAPI.as_view('webhook'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
