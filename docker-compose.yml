@@ -1,0 +1,16 @@
+db:
+  image: postgres
+  environment:
+    POSTGRES_USER: prayerbot
+    POSTGRES_PASSWORD: danger-password
+
+web:
+  build: .
+  user: root
+  command: gunicorn -w 4 -b 0.0.0.0:8000 -k gevent web:app
+  volumes:
+    - ./:/code/
+  ports:
+    - "8000:8000"
+  links:
+    - db
