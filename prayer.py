@@ -24,7 +24,6 @@ class PrayerWebhook(object):
         text = message['text'].encode('utf-8')
         lower_text = text.lower()
         sender_id = sender['id']
-        # initialized_prayers = db.fetch_history({"user_id": sender_id, "description": ""})
         initialized_prayers = Intent.query.filter_by(user_id = sender_id, description = "").all()
         if initialized_prayers != []:
             prayer = initialized_prayers[0]
@@ -48,7 +47,6 @@ class PrayerWebhook(object):
                 'message': response_message
             })
         elif lower_text in user_gettext(sender_id, u'help') or user_gettext(sender_id, u'pray') in lower_text:
-            # commited_prayers = db.fetch_history({"commiter_id": sender_id})
             commited_prayers = Intent.query.filter_by(commiter_id = sender_id)
             options = [
                 {
@@ -108,10 +106,8 @@ class PrayerWebhook(object):
     @staticmethod
     def handle_user_event(sender_id, event_type, payload):
         if event_type == 'update_prayer':
-            # TODO: update prayer in DB
             id_value = payload["prayer_id"]
             description_value = payload["description"]
-            #db.update_description(id_value, description_value)
             intent = Intent.query.filter_by(id = id_value).first()
             intent.description = description_value
             db.session.commit()
@@ -119,9 +115,7 @@ class PrayerWebhook(object):
                 sender_id : utils.response_text(user_gettext(sender_id, u"You'll be notified when somebody wants to pray for you")),
             }
         elif event_type == 'delete_prayer':
-            # TODO: delete prayer from DB
             id_value = payload["prayer_id"]
-            #db.delete(id_value)
             intent = Intent.query.filter_by(id = id_value).first()
             db.session.delete(intent)
             db.session.commit()
@@ -129,13 +123,6 @@ class PrayerWebhook(object):
                 sender_id : utils.response_text(user_gettext(sender_id, u"I've deleted a prayer request")),
             }
         elif event_type == 'pray_for_me':
-            # data_line = dict(
-            #     user_id=sender_id,
-            #     commiter_id="",
-            #     ts=1234,
-            #     description="",
-            #     )
-            # db.insert_row(data_line)
             intent = Intent(sender_id, "")
             intent.ts = 1234
             db.session.add(intent)
@@ -144,15 +131,13 @@ class PrayerWebhook(object):
                 sender_id : utils.response_text(user_gettext(sender_id, u"What is your prayer request?")),
             }
         elif event_type == 'want_to_pray':
-            # prayers = db.fetch_history({"commiter_id": ""}, displayed_prayers_limit)
-            prayers = Intent.query.limit(displayed_prayers_limit).all()
+            prayers = Intent.query.filter_by(commiter_id = "").limit(displayed_prayers_limit).all()
             #print("Fetched prayers: " + json.dumps(prayers))
             prayer_elements = map(map_prayer, prayers)
             return {
                 sender_id : utils.response_elements(prayer_elements),
             }
         elif event_type == 'prayers':
-            # commited_prayers = db.fetch_history({"commiter_id": sender_id})
             commited_prayers = Intent.query.filter_by(commiter_id = sender_id)
             prayer_elements = map(map_said_prayer, commited_prayers)
             if prayer_elements == []:
@@ -170,12 +155,10 @@ class PrayerWebhook(object):
         prayer_id = payload['prayer_id']
         user_name = utils.user_name(user_id)
         sender_name = utils.user_name(sender_id)
-        # prayer = db.fetch(prayer_id)
         prayer = Intent.query.filter_by(id = prayer_id).one_or_none()
         prayer_description = prayer.description.encode("utf-8")
 
         if event_type == 'i_pray':
-            # db.update_commiter(prayer_id, sender_id)
             prayer.commiter_id=sender_id
             db.session.commit()
             return {
@@ -183,7 +166,6 @@ class PrayerWebhook(object):
                 user_id : utils.response_text(user_gettext(user_id, u"User %(name)s will be praying in your following request: %(desc)s", name=sender_name, desc=prayer_description)),
             }
         elif event_type == 'did_pray':
-            # db.delete(prayer_id)
             db.session.delete(prayer)
             db.session.commit()
             return {
@@ -196,7 +178,6 @@ class PrayerWebhook(object):
                 sender_id : utils.response_text(user_gettext(sender_id, 'User %(name)s has been ensured that you pray for him', name=user_name)),
             }
         elif event_type == 'give_up':
-            # db.update_commiter(prayer_id, '')
             prayer.commiter_id=''
             db.session.commit()
             return {
