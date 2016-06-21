@@ -6,7 +6,7 @@ Environment variable ACCESS_TOKEN with your Facebook's page token has to be set.
 
 Requirements:
 * Docker engine (for OS X also docker-machine)
-* docker-compose (pip install docker-compose)
+* docker-compose (`pip install docker-compose`)
 
-To start app you just need to `docker-compose web up`
+To start app you just need to `docker-compose run web up`
 To run test suite `docker-compose run web py.test`
