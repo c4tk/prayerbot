@@ -19,11 +19,10 @@ displayed_prayers_limit = 5
 
 class PrayerWebhook(object):
     @staticmethod
-    def handle_message(sender, message):
+    def handle_message(sender_id, message):
         response = None
         text = message['text'].encode('utf-8')
         lower_text = text.lower()
-        sender_id = sender['id']
         initialized_prayers = Intent.query.filter_by(user_id = sender_id, description = "").all()
         if initialized_prayers != []:
             prayer = initialized_prayers[0]
@@ -90,16 +89,17 @@ class PrayerWebhook(object):
         return response
 
     @staticmethod
-    def handle_postback(sender, postback):
+    def handle_postback(sender_id, postback):
         payload = json.loads(postback['payload'])
-        sender_id = sender['id']
 
         if 'user_event' in payload:
             event_type = payload['user_event']
             callbacks = PrayerWebhook.handle_user_event(sender_id, event_type, payload)
         elif 'prayer_event' in payload:
             event_type = payload['prayer_event']
-            callbacks = PrayerWebhook.handle_prayer_event(sender_id, event_type, payload)
+            user_id = payload['user_id']
+            prayer_id = payload['prayer_id']
+            callbacks = PrayerWebhook.handle_prayer_event(sender_id, user_id, prayer_id, event_type, payload)
         response_callbacks = map(map_callback, callbacks.items())
         return response_callbacks
 
@@ -150,11 +150,9 @@ class PrayerWebhook(object):
                 }
 
     @staticmethod
-    def handle_prayer_event(sender_id, event_type, payload):
-        user_id = payload['user_id']
-        prayer_id = payload['prayer_id']
-        user_name = utils.user_name(user_id)
+    def handle_prayer_event(sender_id, user_id, prayer_id, event_type, payload):
         sender_name = utils.user_name(sender_id)
+        user_name = utils.user_name(user_id)
         prayer = Intent.query.filter_by(id = prayer_id).one_or_none()
         prayer_description = prayer.description.encode("utf-8")
 
