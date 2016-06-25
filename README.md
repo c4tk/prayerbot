@@ -1,4 +1,4 @@
-# Prayer Exchange
+# PrayerBot [![Build Status](https://travis-ci.org/kubaodias/prayerbot.svg?branch=master)](https://travis-ci.org/kubaodias/prayerbot)
 
 Environment variable ACCESS_TOKEN with your Facebook's page token has to be set.
 
