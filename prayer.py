@@ -2,10 +2,10 @@
 # -*- coding: UTF-8 -*-
 
 import json
-import facebook.utils as utils
 import tools.systools as systools
 from dbms.rdb import db
 from dbms.models import Intent
+from facebook import user_utils, utils
 from translations.user import user_gettext
 
 displayed_prayers_limit = 5
@@ -144,8 +144,8 @@ class PrayerWebhook(object):
 
     @staticmethod
     def handle_prayer_event(sender_id, user_id, prayer_id, event_type, payload):
-        sender_name = utils.user_name(sender_id)
-        user_name = utils.user_name(user_id)
+        sender_name = user_utils.user_name(sender_id)
+        user_name = user_utils.user_name(user_id)
         prayer = Intent.query.filter_by(id = prayer_id).one_or_none()
         prayer_description = prayer.description.encode("utf-8")
 
@@ -186,7 +186,7 @@ def map_callback(callback):
 def map_prayer(prayer):
     user_id = prayer.user_id
     return {
-        "title": utils.user_name(user_id),
+        "title": user_utils.user_name(user_id),
         "subtitle": prayer.description,
         "buttons": [
             {
@@ -195,13 +195,13 @@ def map_prayer(prayer):
                 "payload": json.dumps({"prayer_event": "i_pray", "prayer_id": prayer.id, "user_id": user_id})
             }
         ],
-        "image_url": utils.get_img_url(user_id)
+        "image_url": user_utils.img_url(user_id)
     }
 
 def map_said_prayer(prayer):
     user_id = prayer.user_id
     return {
-        "title": utils.user_name(user_id),
+        "title": user_utils.user_name(user_id),
         "subtitle": prayer.description,
         "buttons": [
             {
@@ -220,5 +220,5 @@ def map_said_prayer(prayer):
                 "payload": json.dumps({"prayer_event": "give_up", "prayer_id": prayer.id, "user_id": user_id})
             },
         ],
-        "image_url": utils.get_img_url(user_id)
+        "image_url": user_utils.img_url(user_id)
     }
