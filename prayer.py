@@ -10,13 +10,6 @@ from translations.user import user_gettext
 
 displayed_prayers_limit = 5
 
-
-##TODO: remove test
-#from db.storage import PostgresStorage
-#storage = PostgresStorage()
-#storage.test()
-##END of block to remove
-
 class PrayerWebhook(object):
     @staticmethod
     def handle_message(sender_id, message):
