@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-06-08 22:26+0200\n"
+"POT-Creation-Date: 2016-06-27 22:11+0200\n"
 "PO-Revision-Date: 2016-06-08 20:55+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -19,46 +19,46 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
 
-#: prayer.py:31
+#: prayer.py:23
 #, python-format
 msgid "You requested a prayer for: %(value)s?"
 msgstr ""
 "Czy na pewno chcesz żeby ktoś się pomodlił w następującej intencji: "
 "%(value)s"
 
-#: prayer.py:35
+#: prayer.py:27
 msgid "Yes"
 msgstr "Tak"
 
-#: prayer.py:40
+#: prayer.py:32
 msgid "No"
 msgstr "Nie"
 
-#: prayer.py:49
+#: prayer.py:41
 msgid "help"
 msgstr "pomoc"
 
-#: prayer.py:49
+#: prayer.py:41
 msgid "pray"
 msgstr "modl"
 
-#: prayer.py:54
+#: prayer.py:46
 msgid "Please pray for me"
 msgstr "Potrzebuję modlitwy"
 
-#: prayer.py:59
+#: prayer.py:51
 msgid "I want to pray"
 msgstr "Chcę się pomodlić"
 
-#: prayer.py:66
+#: prayer.py:58
 msgid "Who do I pray for?"
 msgstr "Za kogo się modlę"
 
-#: prayer.py:70
+#: prayer.py:62
 msgid "Please choose what do you need?"
 msgstr "Proszę wybierz czego potrzebujesz?"
 
-#: prayer.py:85
+#: prayer.py:77
 msgid ""
 "Sorry but I don't understand you.\n"
 "Type 'help' to get additional information."
@@ -66,47 +66,47 @@ msgstr ""
 "Niestety Cię nie rozumiem.\n"
 "Wpisz 'pomoc' żeby uzyskać dodatkowe informacje."
 
-#: prayer.py:114
+#: prayer.py:108
 msgid "You'll be notified when somebody wants to pray for you"
 msgstr "Zostaniesz poinformowany gdy ktoś będzie chciał się za Ciebie pomodlić"
 
-#: prayer.py:121
+#: prayer.py:116
 msgid "I've deleted a prayer request"
 msgstr "Usunąłem prośbę o modlitwę"
 
-#: prayer.py:132
+#: prayer.py:124
 msgid "What is your prayer request?"
 msgstr "Jaka jest Twoja intencja?"
 
-#: prayer.py:146
+#: prayer.py:138
 msgid "There're no prayer requests"
 msgstr "Brak aktualnych intencji"
 
-#: prayer.py:163
+#: prayer.py:156
 #, python-format
 msgid "You're subscribed for the prayer request from user %(name)s"
 msgstr "Zostałeś zapisany na modlitwę w intencji użytkownika %(name)s"
 
-#: prayer.py:164
+#: prayer.py:157
 #, python-format
 msgid "User %(name)s will be praying in your following request: %(desc)s"
 msgstr ""
 "Użytkownik %(name)s będzie się modlił w Twojej następującej intencji: "
 "%(desc)s"
 
-#: prayer.py:169
+#: prayer.py:163
 #, python-format
 msgid "User %(name)s has prayed in your request: %(desc)s"
 msgstr "Użytkownik %(name)s pomodlił się w Twojej intencji: %(desc)s"
 
-#: prayer.py:170
+#: prayer.py:164
 #, python-format
 msgid "User %(name)s has been notified that you've prayed for him/her. Thank you"
 msgstr ""
 "Użytkownik %(name)s został powiadomiony o tym, że pomodliłeś się za "
 "niego. Dziękujemy"
 
-#: prayer.py:174
+#: prayer.py:168
 #, python-format
 msgid ""
 "User %(name)s wants to ensure you about his prayer in the following "
@@ -115,14 +115,14 @@ msgstr ""
 "Użytkownik %(name)s pamięta o Tobie w modlitwie w następującej intencji: "
 "%(desc)s"
 
-#: prayer.py:175
+#: prayer.py:169
 #, python-format
 msgid "User %(name)s has been ensured that you pray for him"
 msgstr ""
 "Użytkownik %(name)s został powiadomiony o tym, że pamiętasz o nim w "
 "modlitwie"
 
-#: prayer.py:180
+#: prayer.py:175
 #, python-format
 msgid ""
 "Thank you for your will of praying. User %(name)s won't be notified about"
@@ -131,18 +131,19 @@ msgstr ""
 "Dziękujemy za chęć modlitwy. Użytkownik %(name)s nie zostanie "
 "powiadomiony o Twojej rezygnacji"
 
-#: prayer.py:199
+#: prayer.py:194
 msgid "I am praying"
 msgstr "Modlę się"
 
-#: prayer.py:214
+#: prayer.py:209
 msgid "I've prayed"
 msgstr "Pomodliłem się"
 
-#: prayer.py:219
+#: prayer.py:214
 msgid "Ensure about your prayer"
 msgstr "Zapewnij o modlitwie"
 
-#: prayer.py:224
+#: prayer.py:219
 msgid "Stop your prayer"
 msgstr "Rezygnuję z modlitwy"
+
