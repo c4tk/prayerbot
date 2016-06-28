@@ -23,12 +23,10 @@ class PrayerWebhook(object):
                 user_gettext(sender_id, u"You requested a prayer for: %(value)s?", value=text),
                 [
                     {
-                        "type":"postback",
                         "title": user_gettext(sender_id, u"Yes"),
                         "payload": json.dumps({"user_event": "update_prayer", "prayer_id": prayer.id, "description": text})
                     },
                     {
-                        "type":"postback",
                         "title": user_gettext(sender_id, u"No"),
                         "payload": json.dumps({"user_event": "delete_prayer", "prayer_id": prayer.id})
                     },
@@ -42,19 +40,16 @@ class PrayerWebhook(object):
             commited_prayers = Intent.query.filter_by(commiter_id = sender_id)
             options = [
                 {
-                    "type":"postback",
                     "title": user_gettext(sender_id, u"Please pray for me"),
                     "payload": json.dumps({"user_event": "pray_for_me"})
                 },
                 {
-                    "type":"postback",
                     "title": user_gettext(sender_id, u"I want to pray"),
                     "payload": json.dumps({"user_event": "want_to_pray"})
                 },
             ]
             if commited_prayers != []:
                 options.append({
-                    "type":"postback",
                     "title": user_gettext(sender_id, u"Who do I pray for?"),
                     "payload": json.dumps({"user_event": "prayers"})
                 })
@@ -190,7 +185,6 @@ def map_prayer(prayer):
         "subtitle": prayer.description,
         "buttons": [
             {
-                "type": "postback",
                 "title": user_gettext(user_id, "I am praying"),
                 "payload": json.dumps({"prayer_event": "i_pray", "prayer_id": prayer.id, "user_id": user_id})
             }
@@ -205,17 +199,14 @@ def map_said_prayer(prayer):
         "subtitle": prayer.description,
         "buttons": [
             {
-                "type": "postback",
                 "title": user_gettext(user_id, "I've prayed"),
                 "payload": json.dumps({"prayer_event": "did_pray", "prayer_id": prayer.id, "user_id": user_id})
             },
             {
-                "type": "postback",
                 "title": user_gettext(user_id, "Ensure about your prayer"),
                 "payload": json.dumps({"prayer_event": "send_message", "prayer_id": prayer.id, "user_id": user_id})
             },
             {
-                "type": "postback",
                 "title": user_gettext(user_id, "Stop your prayer"),
                 "payload": json.dumps({"prayer_event": "give_up", "prayer_id": prayer.id, "user_id": user_id})
             },

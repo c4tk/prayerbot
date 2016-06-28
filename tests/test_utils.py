@@ -16,21 +16,48 @@ class FacebookUtilsTestSuite(unittest.TestCase):
         text = "push the button"
         buttons = [
             {
-                "type":"postback",
                 "title": "Yes",
                 "payload": "press_yes"
             },
             {
-                "type":"postback",
                 "title": "No",
                 "payload": "press_no"
             },
         ]
         res = utils.response_buttons(text, buttons)
-        assert res == json.dumps({"attachment": {"type": "template", "payload":{"template_type": "button", "text": text, "buttons": buttons}}})
+        assert res == json.dumps({"attachment": {"type": "template", "payload": {"template_type": "button", "text": text,
+            "buttons": [
+                {
+                    "type":"postback",
+                    "title": "Yes",
+                    "payload": "press_yes"
+                },
+                {
+                    "type":"postback",
+                    "title": "No",
+                    "payload": "press_no"
+                },
+            ]
+        }}})
 
     def test_response_elements(self):
         elements = [
+            {
+                "title": "elem_title",
+                "subtitle": "elem_subtitle",
+                "buttons": [
+                    {
+                        "title": "button_title",
+                        "payload": "button_paylod"
+                    }
+                ]
+            },
+            {
+                "title": "simple_elem_title"
+            }
+        ]
+        res = utils.response_elements(elements)
+        assert res == json.dumps({"attachment": {"type": "template", "payload": {"template_type": "generic", "elements": [
             {
                 "title": "elem_title",
                 "subtitle": "elem_subtitle",
@@ -45,6 +72,4 @@ class FacebookUtilsTestSuite(unittest.TestCase):
             {
                 "title": "simple_elem_title"
             }
-        ]
-        res = utils.response_elements(elements)
-        assert res == json.dumps({"attachment": {"type": "template", "payload": {"template_type": "generic", "elements": elements}}})
+        ]}}})

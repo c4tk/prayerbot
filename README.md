@@ -2,7 +2,7 @@
 
 Environment variable ACCESS_TOKEN with your Facebook's page token has to be set.
 
-# You can easily setup PrayerBot for development using Docker
+### You can easily setup PrayerBot for development using Docker
 
 Requirements:
 * Docker engine (for OS X also docker-machine)
