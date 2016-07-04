@@ -2,7 +2,6 @@
 # -*- coding: UTF-8 -*-
 
 import json
-import tools.systools as systools
 from dbms.rdb import db
 from dbms.models import Intent
 from events import *
@@ -58,13 +57,6 @@ class PrayerWebhook(object):
                 user_gettext(sender_id, u"Please choose what do you need?"),
                 options
             )
-            response = json.dumps({
-                'recipient': { 'id' : sender_id },
-                'message': response_message
-            })
-        elif text == 'info':
-            resp_text = systools.system_info()
-            response_message = utils.response_text("Version: " + resp_text)
             response = json.dumps({
                 'recipient': { 'id' : sender_id },
                 'message': response_message
