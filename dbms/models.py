@@ -15,6 +15,7 @@ class Intent(db.Model):
     def __init__(self, user_id, description):
         self.user_id = user_id
         self.description = description
+        self.commiter_id = ''
 
     def __repr__(self):
         return u"<Intent id:{}, user_id: {}, desc:{}>".format(self.id, self.user_id, self.description)
