@@ -16,7 +16,8 @@ class PrayerWebhook(object):
         response_message = None
         text = message['text'].encode('utf-8')
         lower_text = text.lower()
-        initialized_prayers = Intent.query.filter_by(user_id = sender_id, description = '').all()
+        #initialized_prayers = Intent.query.filter_by(user_id = sender_id, description = '').all()
+        initialized_prayers = []
         if initialized_prayers != []:
             prayer = initialized_prayers[0]
             response_message = utils.response_buttons(

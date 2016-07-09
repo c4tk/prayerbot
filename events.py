@@ -12,7 +12,7 @@ class PrayerEvent(Enum):
 
     @staticmethod
     def payload(key, prayer_id, user_id):
-        return json.dumps({"prayer_event": key.value, "prayer_id": prayer_id, "user_id": user_id})
+        return json.dumps({'prayer_event': key.value, 'prayer_id': prayer_id, 'user_id': user_id})
 
 class UserEvent(Enum):
     UPDATE_PRAYER = 1
@@ -23,6 +23,6 @@ class UserEvent(Enum):
 
     @staticmethod
     def payload(key, args = {}):
-        event_payload = {"user_event": key.value}
+        event_payload = {'user_event': key.value}
         event_payload.update(args)
         return json.dumps(event_payload)

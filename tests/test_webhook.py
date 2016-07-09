@@ -4,7 +4,6 @@ import mock
 import pytest
 import unittest
 from flask import url_for
-from web import WebhookAPI
 
 class JSONFlaskMixin(object):
     def json_post(self, url, data):
