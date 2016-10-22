@@ -12,7 +12,7 @@ flask-babel
 # ----------------------
 # requests
 # ----------------------
-requests==2.10.0
+requests==2.11.1
 
 # ----------------------
 # Testing
@@ -36,4 +36,4 @@ ipdb==0.10.1
 # ----------------------
 SQLAlchemy
 Flask-SQLAlchemy
-psycopg2==2.6.1
+psycopg2==2.6.2
