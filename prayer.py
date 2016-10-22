@@ -34,7 +34,7 @@ class PrayerWebhook(object):
                     },
                 ]
             )
-        elif lower_text in user_gettext(sender_id, 'help') or user_gettext(sender_id, 'pray') in lower_text or lower_text in 'help':
+        elif lower_text in user_gettext(sender_id, 'help') or user_gettext(sender_id, 'prayer') in lower_text or lower_text in 'help':
             commited_prayers = Intent.query.filter_by(commiter_id = sender_id)
             options = [
                 {
@@ -56,13 +56,13 @@ class PrayerWebhook(object):
                 options
             )
         elif lower_text in user_gettext(sender_id, u"bible"):
-            # bibleVerses = BibleVerse.query.all()
-            # verse = random.choice(bibleVerses)
-            # if (verse == None):
-            verse = BibleVerse(u"Bóg jest światłością, a nie ma w Nim żadnej ciemności.", "1J5b")
+            bibleVerses = BibleVerse.query.all()
+            verse = random.choice(bibleVerses)
+            if (verse == None):
+                verse = BibleVerse(u"Bóg jest światłością, a nie ma w Nim żadnej ciemności.", "1J5b")
             response_message =  utils.response_text("\"" + verse.text + "\" " + verse.address)
         else:
-            response_message = utils.response_text(user_gettext(sender_id, u"Sorry but I don't understand you.\nType 'help' to get additional information."))
+            response_message = utils.response_text(user_utils.user_name(sender_id) + user_gettext(sender_id, u", God bless you!\nType 'prayer' to see prayer options or 'Bible' to get Bible verse for you."))
 
         response = json.dumps({
             'recipient': { 'id' : sender_id },
