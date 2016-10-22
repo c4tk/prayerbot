@@ -1,8 +1,9 @@
 #!/usr/bin/env python2
 # -*- coding: UTF-8 -*-
+from sqlalchemy import func
 
 from dbms.rdb import db
-from dbms.models import Intent
+from dbms.models import Intent, BibleVerse
 from events import *
 from facebook import user_utils, utils
 from translations.user import user_gettext
@@ -53,6 +54,10 @@ class PrayerWebhook(object):
                 user_gettext(sender_id, u"Please choose what do you need?"),
                 options
             )
+        elif lower_text in user_gettext(sender_id, 'verse'):
+            bibleVerse = BibleVerse.query.first()
+            response_message = utils.response_text(sender_id, "\"" + bibleVerse.text + "\" " + bibleVerse.address)
+            # response_message = utils.response_text(u"testowa odpowiedz")
         else:
             response_message = utils.response_text(user_gettext(sender_id, u"Sorry but I don't understand you.\nType 'help' to get additional information."))
 
