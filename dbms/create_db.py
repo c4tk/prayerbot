@@ -16,6 +16,7 @@ db.session.add(Intent(215380638847054, u"W intencji Bogu wiadomej"))
 # insert Bible verses
 db.session.add(BibleVerse(u"Lecz ci, co zaufali Panu, odzyskują siły, otrzymują skrzydła jak orły: biegną bez zmęczenia, bez znużenia idą", u"Iz40,31"))
 db.session.add(BibleVerse(u"Nie sądźcie, abyście nie byli sądzeni. Bo takim sądem, jakim sądzicie, i was osądzą; i taką miarą jaką wy mierzycie, wam odmierzą", u"Mt7,1"))
+db.session.add(BibleVerse(u"Bóg jest światłością, a nie ma w Nim żadnej ciemności.", u"1J5b"))
 
 # commit the changes
 db.session.commit()

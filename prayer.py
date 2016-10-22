@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: UTF-8 -*-
-from sqlalchemy import func
+import random
 
 from dbms.rdb import db
 from dbms.models import Intent, BibleVerse
@@ -54,10 +54,12 @@ class PrayerWebhook(object):
                 user_gettext(sender_id, u"Please choose what do you need?"),
                 options
             )
-        elif lower_text in user_gettext(sender_id, 'verse'):
-            bibleVerse = BibleVerse.query.first()
-            response_message = utils.response_text(sender_id, "\"" + bibleVerse.text + "\" " + bibleVerse.address)
-            # response_message = utils.response_text(u"testowa odpowiedz")
+        elif lower_text in user_gettext(sender_id, u"bible"):
+            # bibleVerses = BibleVerse.query.all()
+            # verse = random.choice(bibleVerses)
+            # if (verse == None):
+            verse = BibleVerse(u"Bóg jest światłością, a nie ma w Nim żadnej ciemności.", "1J5b")
+            response_message =  utils.response_text("\"" + verse.text + "\" " + verse.address)
         else:
             response_message = utils.response_text(user_gettext(sender_id, u"Sorry but I don't understand you.\nType 'help' to get additional information."))
 
