@@ -7,6 +7,7 @@ from dbms.models import Intent
 from events import *
 from facebook import user_utils, utils
 from translations.user import user_gettext
+import time
 
 displayed_prayers_limit = 5
 
@@ -32,7 +33,7 @@ class PrayerWebhook(object):
                     },
                 ]
             )
-        elif lower_text in user_gettext(sender_id, 'help') or user_gettext(sender_id, 'pray') in lower_text:
+        elif lower_text in user_gettext(sender_id, 'help') or user_gettext(sender_id, 'pray') in lower_text or lower_text in 'help':
             commited_prayers = Intent.query.filter_by(commiter_id = sender_id)
             options = [
                 {
@@ -100,13 +101,13 @@ class PrayerWebhook(object):
             }
         elif event == UserEvent.PRAY_FOR_ME:
             intent = Intent(sender_id, '')
-            intent.ts = 1234
+            intent.ts = int(time.time())
             db.session.add(intent)
             return {
                 sender_id : utils.response_text(user_gettext(sender_id, u"What is your prayer request?")),
             }
         elif event == UserEvent.WANT_TO_PRAY:
-            prayers = Intent.query.filter_by(commiter_id = '').limit(displayed_prayers_limit).all()
+            prayers = Intent.query.filter_by(commiter_id = 0).limit(displayed_prayers_limit).all()
             #print('Fetched prayers: ' + json.dumps(prayers))
             prayer_elements = map(map_prayer, prayers)
             if prayer_elements == []:
@@ -154,9 +155,18 @@ class PrayerWebhook(object):
                 sender_id : utils.response_text(user_gettext(sender_id, u"User %(name)s has been ensured that you pray for him", name=user_name)),
             }
         elif event == PrayerEvent.GIVE_UP:
-            intent.commiter_id = ''
+            intent.commiter_id = 0
             return {
                 sender_id : utils.response_text(user_gettext(sender_id, u"Thank you for your will of praying. User %(name)s won't be notified about you giving up.", name=user_name)),
+            }
+        elif event == PrayerEvent.CONFIRM:
+            intent.confirmed = 1
+            return {
+                sender_id : utils.response_text(user_gettext(sender_id, u"Thank you for your will of praying.")),
+            }
+        elif event == PrayerEvent.DONT_CONFIRM:
+            return {
+                sender_id : utils.response_text(user_gettext(sender_id, u"Please pray. Someone is counting on You.\nI will aks You again tomorrow.")),
             }
 
 def map_callback(callback):

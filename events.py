@@ -9,6 +9,8 @@ class PrayerEvent(Enum):
     DID_PRAY = 2
     SEND_MESSAGE = 3
     GIVE_UP = 4
+    CONFIRM = 5
+    DONT_CONFIRM = 6
 
     @staticmethod
     def payload(key, prayer_id, user_id):

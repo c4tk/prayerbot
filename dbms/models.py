@@ -11,11 +11,13 @@ class Intent(db.Model):
     description = db.Column(db.String)
     ts = db.Column(db.Integer)
     commiter_id = db.Column(db.Integer)
+    confirmed = db.Column(db.Integer)
 
     def __init__(self, user_id, description):
         self.user_id = user_id
         self.description = description
-        self.commiter_id = ''
+        self.commiter_id = 0
+        self.confirmed = 0
 
     def __repr__(self):
-        return u"<Intent id:{}, user_id: {}, desc:{}>".format(self.id, self.user_id, self.description)
+        return u"<Intent id:{}, user_id: {}, desc:{}>".format(self.id, self.user_id, self.description).encode('utf-8')
