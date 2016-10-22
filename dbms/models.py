@@ -19,3 +19,19 @@ class Intent(db.Model):
 
     def __repr__(self):
         return u"<Intent id:{}, user_id: {}, desc:{}>".format(self.id, self.user_id, self.description)
+
+class BibleVerse(db.Model):
+    """ Model class for Bible qoute """
+
+    __tablename__ = "t_bible_verse"
+
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String, nullable=False)
+    address = db.Column(db.String)
+
+    def __init__(self, text, address):
+        self.text = text
+        self.address = address
+
+    def __repr__(self):
+        return u"BibleVerse id:{}, text:{}, address:{}".format(self.id, self.text, self.address)
