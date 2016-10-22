@@ -3,21 +3,21 @@
 from flask import Flask, request
 from flask.views import MethodView
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
 from flask_babel import Babel
 from facebook.api import FacebookApi
 from prayer import PrayerWebhook as webhook
 from dbms.rdb import db, register_admin
 
-
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///intent.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['BASIC_AUTH_USERNAME'] = 'john'
+    app.config['BASIC_AUTH_PASSWORD'] = 'matrix'
     babel = Babel(app)
     admin = Admin(app, name='PrayerBot', template_mode='bootstrap3')
     db.init_app(app)
-    register_admin(admin)
+    register_admin(admin, app)
     return app
 
 ###

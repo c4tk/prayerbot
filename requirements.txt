@@ -38,3 +38,4 @@ SQLAlchemy
 Flask-SQLAlchemy
 psycopg2==2.6.2
 Flask-Admin==1.4.2
+Flask-BasicAuth==0.2.0
