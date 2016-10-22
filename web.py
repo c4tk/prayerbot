@@ -2,10 +2,12 @@
 
 from flask import Flask, request
 from flask.views import MethodView
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 from flask_babel import Babel
 from facebook.api import FacebookApi
 from prayer import PrayerWebhook as webhook
-from dbms.rdb import db
+from dbms.rdb import db, register_admin
 
 
 def create_app():
@@ -13,7 +15,9 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///intent.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     babel = Babel(app)
+    admin = Admin(app, name='PrayerBot', template_mode='bootstrap3')
     db.init_app(app)
+    register_admin(admin)
     return app
 
 ###
@@ -63,4 +67,4 @@ app.app_context().push()
 app.add_url_rule('/webhook', view_func=WebhookAPI.as_view('webhook'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host="0.0.0.0")
