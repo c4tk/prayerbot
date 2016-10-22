@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-import httplib
 import os
-import requests
 import sys
+
+import requests
 
 GRAPH_API = "https://graph.facebook.com/"
 
 class FacebookApi:
-    def __init__(self, version = "v2.6"):
+    def __init__(self, version = "v2.8"):
         self.access_token = os.environ.get('ACCESS_TOKEN')
         self.version = version
         self.base_url = GRAPH_API + self.version
@@ -36,4 +36,3 @@ class FacebookApi:
         if response.text != '':
             print("  body: " + response.text)
         return response
-

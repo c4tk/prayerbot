@@ -1,7 +1,7 @@
 import os
 import requests
 
-GRAPH_API_URL = '/v2.6/'
+GRAPH_API_URL = '/v2.8/'
 
 def _get_user_data(user_id):
     access_token = os.environ.get('ACCESS_TOKEN')
