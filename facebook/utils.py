@@ -1,5 +1,8 @@
 import json
 
+from facebook.api import FacebookApi
+
+
 def _update_button_type(buttonJson):
     buttonJson['type'] = "postback"
     return buttonJson
@@ -38,3 +41,13 @@ def response_elements(elements):
             }
         }
     })
+
+def send_greeting_text_config():
+    api = FacebookApi()
+    response = json.dumps({
+        "setting_type":"greeting",
+        "greeting": {
+            "text": "Hi {{user_first_name}}. I am a Prayer helper bot."
+        }
+    })
+    api.post("/me/thread_settings", response)

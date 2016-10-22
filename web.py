@@ -4,6 +4,8 @@ from flask import Flask, request
 from flask.views import MethodView
 from flask_admin import Admin
 from flask_babel import Babel
+
+from facebook import utils
 from facebook.api import FacebookApi
 from prayer import PrayerWebhook as webhook
 from dbms.rdb import db, register_admin
@@ -18,6 +20,8 @@ def create_app():
     admin = Admin(app, name='PrayerBot', template_mode='bootstrap3')
     db.init_app(app)
     register_admin(admin, app)
+    utils.send_greeting_text_config()
+
     return app
 
 ###
