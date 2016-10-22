@@ -1,7 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: UTF-8 -*-
 
-import json
 from dbms.rdb import db
 from dbms.models import Intent
 from events import *
@@ -15,8 +14,9 @@ class PrayerWebhook(object):
     @staticmethod
     def handle_message(sender_id, message):
         response_message = None
-        text = message['text'].encode('utf-8')
-        lower_text = text.lower()
+        text = message['text']
+        lower_text = unicode(text.lower())
+
         initialized_prayers = Intent.query.filter_by(user_id = sender_id, description = '').all()
         if initialized_prayers != []:
             prayer = initialized_prayers[0]
@@ -107,7 +107,7 @@ class PrayerWebhook(object):
                 sender_id : utils.response_text(user_gettext(sender_id, u"What is your prayer request?")),
             }
         elif event == UserEvent.WANT_TO_PRAY:
-            prayers = Intent.query.filter_by(commiter_id = 0).limit(displayed_prayers_limit).all()
+            prayers = Intent.query.filter(Intent.commiter_id == 0 ).filter(Intent.user_id != sender_id).limit(displayed_prayers_limit).all()
             #print('Fetched prayers: ' + json.dumps(prayers))
             prayer_elements = map(map_prayer, prayers)
             if prayer_elements == []:

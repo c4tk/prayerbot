@@ -63,4 +63,4 @@ app.app_context().push()
 app.add_url_rule('/webhook', view_func=WebhookAPI.as_view('webhook'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
