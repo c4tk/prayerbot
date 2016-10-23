@@ -8,18 +8,6 @@ from facebook.api import FacebookApi
 from prayer import PrayerWebhook as webhook
 from dbms.rdb import db, register_admin
 
-def create_app():
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///intent.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['BASIC_AUTH_USERNAME'] = 'john'
-    app.config['BASIC_AUTH_PASSWORD'] = 'matrix'
-    babel = Babel(app)
-    admin = Admin(app, name='PrayerBot', template_mode='bootstrap3')
-    db.init_app(app)
-    register_admin(admin, app)
-    return app
-
 ###
 # Routing for your application.
 ###
@@ -62,9 +50,22 @@ class WebhookAPI(MethodView):
                     self.api.post("/me/messages", response_callback)
         return "OK"
 
+def create_app(sqlite_path='sqlite:///intent.db'):
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = sqlite_path
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['BASIC_AUTH_USERNAME'] = 'john'
+    app.config['BASIC_AUTH_PASSWORD'] = 'matrix'
+    babel = Babel(app)
+    admin = Admin(app, name='PrayerBot', template_mode='bootstrap3')
+    db.init_app(app)
+    register_admin(admin, app)
+    app.app_context().push()
+    app.add_url_rule('/webhook', view_func=WebhookAPI.as_view('webhook'))
+
+    return app
+
 app = create_app()
-app.app_context().push()
-app.add_url_rule('/webhook', view_func=WebhookAPI.as_view('webhook'))
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0")

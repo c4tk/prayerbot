@@ -4,7 +4,15 @@ import unittest
 
 from prayer import PrayerWebhook
 
-class MessengerBotTestSuite(unittest.TestCase):
+class PrayerBotTest(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+class MessengerBotTestSuite(PrayerBotTest):
 
     def test_prayer_bot_recipent(self):
         sender_id = '10'
