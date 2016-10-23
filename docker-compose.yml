@@ -7,7 +7,7 @@ db:
 web:
   build: .
   user: root
-  command: gunicorn -w 4 -b 0.0.0.0:8000 -k gevent web:app
+  command: gunicorn -w 4 -b 0.0.0.0:8000 -k gevent web:app --reload
   volumes:
     - ./:/code/
   ports:
