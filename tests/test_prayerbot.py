@@ -19,4 +19,4 @@ class MessengerBotTestSuite(PrayerBotTest):
         message = {'text': 'helpppppp'}
         res = json.loads(PrayerWebhook.handle_message(sender_id, message))
         assert res['recipient']['id'] == '10'
-        assert json.loads(res['message'])['text'] == u"Niestety Cię nie rozumiem.\nWpisz 'pomoc' żeby uzyskać dodatkowe informacje."
+        assert json.loads(res['message'])['text'] == u"Unknown, Bóg błogosławi! Wpisz 'modlitwa', aby zobaczyć opcje, albo 'Biblia', aby otrzymać fragment z Pisma!"
