@@ -4,7 +4,7 @@ import random
 
 from dbms.rdb import db
 from dbms.models import Intent, BibleVerse
-from events import *
+from events import PrayerEvent, UserEvent
 from facebook import user_utils, utils
 from translations.user import user_gettext
 import time

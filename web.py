@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+import os
 
 from flask import Flask, request
 from flask.views import MethodView
@@ -64,7 +65,8 @@ def create_app(sqlite_path='sqlite:///intent.db'):
     register_admin(admin, app)
     app.app_context().push()
     app.add_url_rule('/webhook', view_func=WebhookAPI.as_view('webhook'))
-    utils.send_greeting_text_config()
+    if os.environ.get('ACCESS_TOKEN'):
+        utils.send_greeting_text_config()
 
     return app
 
