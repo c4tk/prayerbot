@@ -1,5 +1,6 @@
 import os
 import requests
+from translations.user import user_gettext
 
 GRAPH_API_URL = '/v2.8/'
 
@@ -15,7 +16,7 @@ def user_name(user_id):
         if ('name' in data):
             return data['name'].split(' ')[0].encode("utf-8")
         else:
-            raise NameError('Name not found in data provided')
+            return user_gettext(user_id, u"Unknown")
 
 def img_url(user_id):
     try:

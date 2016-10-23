@@ -59,10 +59,11 @@ class PrayerWebhook(object):
             bibleVerses = BibleVerse.query.all()
             verse = random.choice(bibleVerses)
             if (verse == None):
-                verse = BibleVerse(u"Bóg jest światłością, a nie ma w Nim żadnej ciemności.", "1J5b")
+                verse = BibleVerse( user_gettext( u"God is light; in him there is no darkness at all."), "1 J 1,5b")
             response_message =  utils.response_text("\"" + verse.text + "\" " + verse.address)
         else:
-            response_message = utils.response_text(user_utils.user_name(sender_id) + user_gettext(sender_id, u", God bless you!\nType 'prayer' to see prayer options or 'Bible' to get Bible verse for you."))
+            response_message = utils.response_text(user_utils.user_name(sender_id) + 
+                                     user_gettext(sender_id, u", God bless you!\nType 'prayer' to see prayer options or 'Bible' to get Bible verse for you."))
 
         response = json.dumps({
             'recipient': { 'id' : sender_id },

@@ -22,7 +22,7 @@ msgstr ""
 #: prayer.py:24
 #, python-format
 msgid "You requested a prayer for: %(value)s?"
-msgstr ""
+msgstr "Poprosiłeś o modlitwę w intencji: %(value)s?"
 
 #: prayer.py:27
 msgid "Yes"
@@ -61,8 +61,8 @@ msgid ""
 "Sorry but I don't understand you.\n"
 "Type 'help' to get additional information."
 msgstr ""
-"Niestety Cię nie rozumiem.\n"
-"Wpisz 'pomoc' żeby uzyskać dodatkowe informacje."
+"Niestety nie rozumiem Cię.\n"
+"Wpisz słowo 'pomoc' żeby uzyskać dodatkowe informacje."
 
 #: prayer.py:106
 msgid "You'll be notified when somebody wants to pray for you"
@@ -153,3 +153,20 @@ msgid ""
 ", God bless you!\nType 'prayer' to see prayer options or 'Bible' to get Bible"
 " verse for you."
 msgstr ", Bóg błogosławi! Wpisz 'modlitwa', aby zobaczyć opcje, albo 'Biblia', aby otrzymać fragment z Pisma!"
+
+msgid "Did You pray in below request ?\n%(value)s"
+msgstr "Czy pomodliłeś się w poniższej intencji ?\n%(value)s"
+
+msgid "Thank you for your will of praying."
+msgstr "Dziekujemy Ci za Twoją modlitwę."
+
+msgid "Please pray. Someone is counting on You.\nI will aks You again tomorrow."
+msgstr "Pomódl się proszę. Ktoś liczy na Ciebie.\nZapytam Cię ponownie jutro."
+
+msgid "Unknown"
+msgstr "Nieznany"
+
+msgid "God is light; in him there is no darkness at all."
+msgstr "Bóg jest światłością, a nie ma w Nim żadnej ciemności."
+
+
