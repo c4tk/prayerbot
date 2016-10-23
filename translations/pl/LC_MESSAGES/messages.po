@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2016-07-04 21:45+0200\n"
-"PO-Revision-Date: 2016-06-08 20:55+0200\n"
+"PO-Revision-Date: 2016-10-23 00:23+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
 "Language-Team: pl <LL@li.org>\n"
@@ -23,8 +23,6 @@ msgstr ""
 #, python-format
 msgid "You requested a prayer for: %(value)s?"
 msgstr ""
-"Czy na pewno chcesz żeby ktoś się pomodlił w następującej intencji: "
-"%(value)s"
 
 #: prayer.py:27
 msgid "Yes"
@@ -39,8 +37,8 @@ msgid "help"
 msgstr "pomoc"
 
 #: prayer.py:40
-msgid "pray"
-msgstr "modl"
+msgid "prayer"
+msgstr "modlitwa"
 
 #: prayer.py:44
 msgid "Please pray for me"
@@ -145,5 +143,13 @@ msgstr "Zapewnij o modlitwie"
 
 #: prayer.py:212
 msgid "Stop your prayer"
-msgstr "Rezygnuję z modlitwy"
+msgstr "Rezygnuję z modlitwy"
 
+#: prayer.py:58
+msgid "bible"
+msgstr "biblia"
+
+msgid ""
+", God bless you!\nType 'prayer' to see prayer options or 'Bible' to get Bible"
+" verse for you."
+msgstr ", Bóg błogosławi! Wpisz 'modlitwa', aby zobaczyć opcje, albo 'Biblia', aby otrzymać fragment z Pisma!"
