@@ -23,7 +23,7 @@ class Intent(db.Model):
         return u"<Intent id:{}, user_id: {}, desc:{}>".format(self.id, self.user_id, self.description).encode('utf-8')
 
 class BibleVerse(db.Model):
-    """ Model class for Bible qoute """
+    """ Model class for Bible quote """
 
     __tablename__ = "t_bible_verse"
 

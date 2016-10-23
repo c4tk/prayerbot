@@ -4,6 +4,8 @@ from flask import Flask, request
 from flask.views import MethodView
 from flask_admin import Admin
 from flask_babel import Babel
+
+from facebook import utils
 from facebook.api import FacebookApi
 from prayer import PrayerWebhook as webhook
 from dbms.rdb import db, register_admin
@@ -62,6 +64,7 @@ def create_app(sqlite_path='sqlite:///intent.db'):
     register_admin(admin, app)
     app.app_context().push()
     app.add_url_rule('/webhook', view_func=WebhookAPI.as_view('webhook'))
+    utils.send_greeting_text_config()
 
     return app
 
