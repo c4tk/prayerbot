@@ -22,11 +22,11 @@ def confirm_praying_for_intention():
             print prayer.description
             options = [ {
                         'title': user_gettext( prayer.commiter_id, u"Yes" ),
-                        'payload': PrayerEvent.payload( PrayerEvent.CONFIRM, prayer.id, prayer.user_id )
+                        'payload': PrayerEvent.payload(PrayerEvent.CONFIRM_PRAY, prayer.id, prayer.user_id)
                         },
                         {
                         'title': user_gettext( prayer.commiter_id, u"No" ),
-                        'payload': PrayerEvent.payload( PrayerEvent.DONT_CONFIRM, prayer.id, prayer.user_id )
+                        'payload': PrayerEvent.payload(PrayerEvent.DONT_CONFIRM_PRAY, prayer.id, prayer.user_id)
                     } ]
 
             response_message = utils.response_buttons(

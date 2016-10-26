@@ -27,11 +27,11 @@ class PrayerWebhook(object):
                 [
                     {
                         'title': user_gettext(sender_id, u"Yes"),
-                        'payload': UserEvent.payload(UserEvent.UPDATE_PRAYER, {'prayer_id': prayer.id, 'description': text})
+                        'payload': UserEvent.payload(UserEvent.CONFIRM_INTENTION, {'prayer_id': prayer.id, 'description': text})
                     },
                     {
                         'title': user_gettext(sender_id, u"No"),
-                        'payload': UserEvent.payload(UserEvent.DELETE_PRAYER, {'prayer_id': prayer.id})
+                        'payload': UserEvent.payload(UserEvent.DELETE_INTENTION, {'prayer_id': prayer.id})
                     },
                 ]
             )
@@ -93,7 +93,7 @@ class PrayerWebhook(object):
 
     @staticmethod
     def handle_user_event(sender_id, event, payload):
-        if event == UserEvent.UPDATE_PRAYER:
+        if event == UserEvent.CONFIRM_INTENTION:
             prayer_id = payload['prayer_id']
             description_value = payload['description']
             intent = Intent.query.filter_by(id = prayer_id).first()
@@ -101,7 +101,7 @@ class PrayerWebhook(object):
             return {
                 sender_id : utils.response_text(user_gettext(sender_id, u"You'll be notified when somebody wants to pray for you")),
             }
-        elif event == UserEvent.DELETE_PRAYER:
+        elif event == UserEvent.DELETE_INTENTION:
             prayer_id = payload['prayer_id']
             intent = Intent.query.filter_by(id = prayer_id).first()
             db.session.delete(intent)
@@ -158,7 +158,7 @@ class PrayerWebhook(object):
                 user_id : utils.response_text(user_gettext(user_id, u"User %(name)s has prayed in your request: %(desc)s", name=sender_name, desc=intent_description)),
                 sender_id : utils.response_text(user_gettext(sender_id, u"User %(name)s has been notified that you've prayed for him/her. Thank you", name=user_name)),
             }
-        elif event == PrayerEvent.SEND_MESSAGE:
+        elif event == PrayerEvent.ENSURE_PRAY:
             return {
                 user_id : utils.response_text(user_gettext(user_id, u"User %(name)s wants to ensure you about his prayer in the following request: %(desc)s", name=sender_name, desc=intent_description)),
                 sender_id : utils.response_text(user_gettext(sender_id, u"User %(name)s has been ensured that you pray for him", name=user_name)),
@@ -168,12 +168,12 @@ class PrayerWebhook(object):
             return {
                 sender_id : utils.response_text(user_gettext(sender_id, u"Thank you for your will of praying. User %(name)s won't be notified about you giving up.", name=user_name)),
             }
-        elif event == PrayerEvent.CONFIRM:
+        elif event == PrayerEvent.CONFIRM_PRAY:
             intent.confirmed = 1
             return {
                 sender_id : utils.response_text(user_gettext(sender_id, u"Thank you for your will of praying.")),
             }
-        elif event == PrayerEvent.DONT_CONFIRM:
+        elif event == PrayerEvent.DONT_CONFIRM_PRAY:
             return {
                 sender_id : utils.response_text(user_gettext(sender_id, u"Please pray. Someone is counting on You.\nI will aks You again tomorrow.")),
             }
@@ -212,7 +212,7 @@ def map_said_prayer(prayer):
             },
             {
                 'title': user_gettext(user_id, u"Ensure about your prayer"),
-                'payload': PrayerEvent.payload(PrayerEvent.SEND_MESSAGE, prayer.id, user_id)
+                'payload': PrayerEvent.payload(PrayerEvent.ENSURE_PRAY, prayer.id, user_id)
             },
             {
                 'title': user_gettext(user_id, u"Stop your prayer"),
