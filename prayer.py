@@ -11,6 +11,7 @@ from translations.user import user_gettext
 import time
 
 displayed_prayers_limit = 5
+displayed_intentions_limit = 5
 
 class PrayerWebhook(object):
     @staticmethod
@@ -23,7 +24,7 @@ class PrayerWebhook(object):
         if initialized_prayers != []:
             prayer = initialized_prayers[0]
             response_message = utils.response_buttons(
-                user_gettext(sender_id, u"You requested a prayer for: %(value)s?", value=text),
+                user_gettext(sender_id, u"You requested a prayer for: %(value)s ?", value=text),
                 [
                     {
                         'title': user_gettext(sender_id, u"Yes"),
@@ -36,25 +37,41 @@ class PrayerWebhook(object):
                 ]
             )
         elif lower_text in user_gettext(sender_id, 'help') or user_gettext(sender_id, 'prayer') in lower_text or lower_text in 'help':
-            commited_prayers = Intent.query.filter_by(commiter_id = sender_id)
-            options = [
-                {
-                    'title': user_gettext(sender_id, u"Please pray for me"),
-                    'payload': UserEvent.payload(UserEvent.PRAY_FOR_ME)
-                },
+            # Buttons limited to 3 values
+            # So we need to create multiple bubbles in one message
+
+            options1 = [
                 {
                     'title': user_gettext(sender_id, u"I want to pray"),
                     'payload': UserEvent.payload(UserEvent.WANT_TO_PRAY)
-                },
+                }
             ]
-            if commited_prayers != []:
-                options.append({
-                    'title': user_gettext(sender_id, u"Who do I pray for?"),
+
+            commited_prayers = Intent.query.filter_by(commiter_id = sender_id).first()
+            if commited_prayers :
+                options1.append({
+                    'title': user_gettext(sender_id, u"Who do I pray for ?"),
                     'payload': UserEvent.payload(UserEvent.MY_PRAYERS)
                 })
-            response_message = utils.response_buttons(
-                user_gettext(sender_id, u"Please choose what do you need?"),
-                options
+
+            options2 = [
+                {
+                    'title': user_gettext(sender_id, u"Please pray for me"),
+                    'payload': UserEvent.payload(UserEvent.PRAY_FOR_ME)
+                }
+            ]
+
+            intentions = Intent.query.filter_by(user_id = sender_id).first()
+            if intentions :
+                options2.append({
+                        'title': user_gettext(sender_id, u"My intentions"),
+                        'payload': UserEvent.payload(UserEvent.MY_INTENTIONS)
+                    }
+                )
+
+            response_message = utils.response_multiple_bubles_buttons(
+                user_gettext(sender_id, u"Maybe You can pray for someone ?"), options1,
+                user_gettext(sender_id, u"Or maybe You need a prayer ?"), options2
             )
         elif lower_text in user_gettext(sender_id, u"bible"):
             bibleVerses = BibleVerse.query.all()
@@ -113,7 +130,7 @@ class PrayerWebhook(object):
             intent.ts = int(time.time())
             db.session.add(intent)
             return {
-                sender_id : utils.response_text(user_gettext(sender_id, u"What is your prayer request?")),
+                sender_id : utils.response_text(user_gettext(sender_id, u"What is your prayer request ?")),
             }
         elif event == UserEvent.WANT_TO_PRAY:
             prayers = Intent.query.filter(Intent.commiter_id == 0 ).filter(Intent.user_id != sender_id).limit(displayed_prayers_limit).all()
@@ -128,15 +145,39 @@ class PrayerWebhook(object):
                     sender_id : utils.response_elements(prayer_elements),
                 }
         elif event == UserEvent.MY_PRAYERS:
-            commited_prayers = Intent.query.filter_by(commiter_id = sender_id)
-            prayer_elements = map(map_said_prayer, commited_prayers)
+            #commited_prayers = Intent.query.filter_by(commiter_id = sender_id).limit(displayed_prayers_limit).all()
+            #prayer_elements = map(map_said_prayer, commited_prayers)
+            prayer_elements = map_said_prayer_multiple_bubbles( sender_id )
+
             if prayer_elements == []:
                 return {
                     sender_id : utils.response_text(user_gettext(sender_id, u"There're no prayer requests")),
                 }
             else:
                 return {
-                    sender_id : utils.response_elements(prayer_elements),
+                    'recipient': {'id': sender_id},
+                    'message': prayer_elements
+                }
+
+                #return {
+                #    sender_id : utils.response_elements(prayer_elements),
+                #}
+        elif event == UserEvent.MY_INTENTIONS:
+            all_intentions = []
+            for intention in Intent.query.filter_by(user_id=sender_id)[0:displayed_intentions_limit]:
+                if all_intentions == []:
+                    all_intentions = intention.description + "\n"
+                else:
+                    all_intentions = all_intentions + intention.description + "\n"
+
+            if all_intentions == []:
+                return {
+                    sender_id : utils.response_text( user_gettext( sender_id, u"You don't have any intentions" ) ),
+                }
+            else:
+                return {
+                    sender_id : utils.response_text( user_gettext( sender_id, u"Your last few intentions:" ) + "\n"
+                                                     + all_intentions ),
                 }
 
     @staticmethod
@@ -221,3 +262,106 @@ def map_said_prayer(prayer):
         ],
         'image_url': user_utils.img_url(user_id)
     }
+
+
+def map_said_prayer_multiple_bubbles(sender_id):
+
+    elements = None
+
+    #for prayer in Intent.query.filter_by(commiter_id=sender_id).limit(displayed_prayers_limit).all():
+    prayer = Intent.query.filter_by(commiter_id=sender_id).limit(displayed_prayers_limit).first()
+    user_id = prayer.user_id
+
+    if elements:
+        elements.append( {
+                "title": user_utils.user_name(user_id),
+                "subtitle": prayer.description,
+                "image_url": user_utils.img_url(user_id),
+                "buttons": [
+                    {
+                        'title': user_gettext(user_id, u"I've prayed"),
+                        'payload': PrayerEvent.payload(PrayerEvent.DID_PRAY, prayer.id, user_id)
+                    },
+                    {
+                        'title': user_gettext(user_id, u"Ensure about your prayer"),
+                        'payload': PrayerEvent.payload(PrayerEvent.ENSURE_PRAY, prayer.id, user_id)
+                    },
+                    {
+                        'title': user_gettext(user_id, u"Stop your prayer"),
+                        'payload': PrayerEvent.payload(PrayerEvent.GIVE_UP, prayer.id, user_id)
+                    },
+                ]
+            } )
+    else:
+        elements = [ {
+            "title": user_utils.user_name(user_id),
+            "subtitle": prayer.description,
+            "image_url": user_utils.img_url(user_id),
+            "buttons":[
+                {
+                    'title': user_gettext(user_id, u"I've prayed"),
+                    'payload': PrayerEvent.payload(PrayerEvent.DID_PRAY, prayer.id, user_id)
+                },
+                {
+                    'title': user_gettext(user_id, u"Ensure about your prayer"),
+                    'payload': PrayerEvent.payload(PrayerEvent.ENSURE_PRAY, prayer.id, user_id)
+                },
+                {
+                    'title': user_gettext(user_id, u"Stop your prayer"),
+                    'payload': PrayerEvent.payload(PrayerEvent.GIVE_UP, prayer.id, user_id)
+                },
+            ]
+          } ]
+
+    return_element = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": elements
+            }
+        }
+    }
+
+    print( '*** elements ***')
+    print( elements )
+    print( '*** return_element ***' )
+    print( return_element )
+
+    return json.dumps( return_element )
+
+
+#{
+#  "recipient":{
+#    "id":"USER_ID"
+#  },
+#  "message":{
+#    "attachment":{
+#      "type":"template",
+#      "payload":{
+#        "template_type":"generic",
+#        "elements":[
+#          {
+#            "title":"Welcome to Peter\'s Hats",
+#            "item_url":"https://petersfancybrownhats.com",
+#            "image_url":"https://petersfancybrownhats.com/company_image.png",
+#            "subtitle":"We\'ve got the right hat for everyone.",
+#            "buttons":[
+#              {
+#                "type":"web_url",
+#                "url":"https://petersfancybrownhats.com",
+#                "title":"View Website"
+#              },
+#              {
+#                "type":"postback",
+#                "title":"Start Chatting",
+#                "payload":"DEVELOPER_DEFINED_PAYLOAD"
+#              }
+#            ]
+#          }
+#        ]
+#      }
+#    }
+#  }
+#}'
+

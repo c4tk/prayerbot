@@ -2,7 +2,7 @@
 from rdb import db
 
 class Intent(db.Model):
-    """ Intent """
+    """ Model class for Intentions """
 
     __tablename__ = 't_intent'
 
@@ -10,8 +10,8 @@ class Intent(db.Model):
     user_id = db.Column(db.String)
     description = db.Column(db.String)
     ts = db.Column(db.Integer)
-    commiter_id = db.Column(db.Integer)
-    confirmed = db.Column(db.Integer)
+    commiter_id = db.Column(db.Integer, nullable=False)
+    confirmed = db.Column(db.Integer, nullable=False)
 
     def __init__(self, user_id, description):
         self.user_id = user_id

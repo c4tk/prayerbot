@@ -30,6 +30,28 @@ def response_buttons(text, buttons):
         }
     })
 
+def response_multiple_bubles_buttons(text1, buttons1, text2, buttons2):
+    postback_buttons1 = map(_update_button_type, buttons1)
+    postback_buttons2 = map(_update_button_type, buttons2)
+    return json.dumps({
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": [
+                    {
+                        "title": text1,
+                        "buttons": postback_buttons1
+                    },
+                    {
+                        "title": text2,
+                        "buttons": postback_buttons2
+                    }
+                ]
+            }
+        }
+    })
+
 def response_elements(elements):
     postback_elements = map(_update_button_type_in_element, elements)
     return json.dumps({

@@ -22,6 +22,7 @@ class UserEvent(Enum):
     PRAY_FOR_ME = 3
     WANT_TO_PRAY = 4
     MY_PRAYERS = 5
+    MY_INTENTIONS = 6
 
     @staticmethod
     def payload(key, args = {}):
