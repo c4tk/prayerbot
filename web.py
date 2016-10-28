@@ -2,7 +2,7 @@
 import os
 
 from flask import Flask, request
-from flask.views import MethodView
+from flask.views import MethodView, View
 from flask_admin import Admin
 from flask_babel import Babel
 
@@ -53,6 +53,12 @@ class WebhookAPI(MethodView):
                     self.api.post("/me/messages", response_callback)
         return "OK"
 
+class PrivacyPolicy(View):
+
+    def dispatch_request(self):
+        return "This page does not collect any personal information.\n<BR> " \
+               "All prayer intentions collected via Messenger will be deleted after 60 days."
+
 def create_app(sqlite_path='sqlite:///intent.db'):
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = sqlite_path
@@ -64,7 +70,10 @@ def create_app(sqlite_path='sqlite:///intent.db'):
     db.init_app(app)
     register_admin(admin, app)
     app.app_context().push()
+
     app.add_url_rule('/webhook', view_func=WebhookAPI.as_view('webhook'))
+    app.add_url_rule('/privacy', view_func=PrivacyPolicy.as_view('privacy'))
+
     if os.environ.get('ACCESS_TOKEN'):
         utils.send_greeting_text_config()
 
