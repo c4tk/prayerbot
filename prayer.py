@@ -12,6 +12,8 @@ import time
 
 displayed_prayers_limit = 5
 displayed_intentions_limit = 5
+max_intentions = 10
+max_prayers = 10
 
 class PrayerWebhook(object):
     @staticmethod
@@ -36,6 +38,22 @@ class PrayerWebhook(object):
                     },
                 ]
             )
+            # Quick replies buttons does not work in Web interface
+            #response_message = utils.quik_buttons(
+            #    user_gettext(sender_id, u"You requested a prayer for: %(value)s ?", value=text),
+            #    [
+            #       {
+            #            'content_type': 'text',
+            #            'title': user_gettext(sender_id, u"Yes"),
+            #            'payload': UserEvent.payload(UserEvent.CONFIRM_INTENTION, {'prayer_id': prayer.id, 'description': text})
+            #        },
+            #        {
+            #            'content_type': 'text',
+            #            'title': user_gettext(sender_id, u"No"),
+            #            'payload': UserEvent.payload(UserEvent.DELETE_INTENTION, {'prayer_id': prayer.id})
+            #        },
+            #    ]
+            #)
         elif lower_text in user_gettext(sender_id, 'help') or user_gettext(sender_id, 'prayer') in lower_text or lower_text in 'help':
             # Buttons limited to 3 values
             # So we need to create multiple bubbles in one message
@@ -69,10 +87,14 @@ class PrayerWebhook(object):
                     }
                 )
 
-            response_message = utils.response_multiple_bubles_buttons(
-                user_gettext(sender_id, u"Maybe You can pray for someone ?"), options1,
-                user_gettext(sender_id, u"Or maybe You need a prayer ?"), options2
-            )
+            text_list = [ user_gettext(sender_id, u"Maybe You can pray for someone ?") ]
+            text_list.append( user_gettext(sender_id, u"Or maybe You need a prayer ?") )
+
+            options_set = [ options1 ]
+            options_set.append( options2 )
+
+            response_message = utils.response_multiple_bubles_buttons( text_list, options_set )
+
         elif lower_text in user_gettext(sender_id, u"bible"):
             bibleVerses = BibleVerse.query.all()
             verse = random.choice(bibleVerses)
@@ -106,6 +128,7 @@ class PrayerWebhook(object):
         # commit DB changes
         db.session.commit()
         response_callbacks = map(map_callback, callbacks.items())
+
         return response_callbacks
 
     @staticmethod
@@ -126,27 +149,43 @@ class PrayerWebhook(object):
                 sender_id : utils.response_text(user_gettext(sender_id, u"I've deleted a prayer request")),
             }
         elif event == UserEvent.PRAY_FOR_ME:
-            intent = Intent(sender_id, '')
-            intent.ts = int(time.time())
-            db.session.add(intent)
-            return {
-                sender_id : utils.response_text(user_gettext(sender_id, u"What is your prayer request ?")),
-            }
-        elif event == UserEvent.WANT_TO_PRAY:
-            prayers = Intent.query.filter(Intent.commiter_id == 0 ).filter(Intent.user_id != sender_id).limit(displayed_prayers_limit).all()
-            #print('Fetched prayers: ' + json.dumps(prayers))
-            prayer_elements = map(map_prayer, prayers)
-            if prayer_elements == []:
+            # check how many intention user already provided
+            int_cnt = Intent.query.filter(Intent.user_id == sender_id).count()
+
+            if int_cnt < max_intentions:
+                intent = Intent(sender_id, '')
+                intent.ts = int(time.time())
+                db.session.add(intent)
                 return {
-                    sender_id : utils.response_text(user_gettext(sender_id, u"There're no prayer requests")),
+                    sender_id : utils.response_text(user_gettext(sender_id, u"What is your prayer request ?")),
                 }
             else:
                 return {
-                    sender_id : utils.response_elements(prayer_elements),
+                    sender_id : utils.response_text(user_gettext(sender_id, u"You reached maximum intentions count. Please back in few days.")),
+                }
+        elif event == UserEvent.WANT_TO_PRAY:
+
+            pray_cnt = Intent.query.filter(Intent.commiter_id == sender_id ).count()
+
+            if pray_cnt < max_prayers:
+                prayers = Intent.query.filter(Intent.commiter_id == 0 ).filter(Intent.user_id != sender_id).limit(displayed_prayers_limit).all()
+
+                prayer_elements = map(map_prayer, prayers)
+
+                if prayer_elements == []:
+                    return {
+                        sender_id : utils.response_text(user_gettext(sender_id, u"There're no prayer requests")),
+                    }
+                else:
+                    return {
+                        sender_id : utils.response_elements(prayer_elements),
+                    }
+            else:
+                return {
+                    sender_id : utils.response_text(user_gettext(sender_id, u"You reached maximum prayers count. Please pray in your already selected intentions first.")),
                 }
         elif event == UserEvent.MY_PRAYERS:
-            #commited_prayers = Intent.query.filter_by(commiter_id = sender_id).limit(displayed_prayers_limit).all()
-            #prayer_elements = map(map_said_prayer, commited_prayers)
+
             prayer_elements = map_said_prayer_multiple_bubbles( sender_id )
 
             if prayer_elements == []:
@@ -155,15 +194,12 @@ class PrayerWebhook(object):
                 }
             else:
                 return {
-                    'recipient': {'id': sender_id},
-                    'message': prayer_elements
+                    sender_id : utils.response_elements(prayer_elements),
                 }
-
-                #return {
-                #    sender_id : utils.response_elements(prayer_elements),
-                #}
         elif event == UserEvent.MY_INTENTIONS:
+
             all_intentions = []
+
             for intention in Intent.query.filter_by(user_id=sender_id)[0:displayed_intentions_limit]:
                 if all_intentions == []:
                     all_intentions = intention.description + "\n"
@@ -182,42 +218,57 @@ class PrayerWebhook(object):
 
     @staticmethod
     def handle_prayer_event(sender_id, user_id, prayer_id, event, payload):
+
         sender_name = user_utils.user_name(sender_id)
         user_name = user_utils.user_name(user_id)
-        intent = Intent.query.filter_by(id = prayer_id).one_or_none()
-        intent_description = intent.description.encode('utf-8')
 
-        if event == PrayerEvent.I_PRAY:
-            intent.commiter_id = sender_id
+        intent = Intent.query.filter_by(id = prayer_id).one_or_none()
+
+        if intent:
+            intent_description = intent.description
+            #.encode('utf-8')
+
+            if event == PrayerEvent.I_PRAY:
+                intent.commiter_id = sender_id
+                return {
+                    # This is dictionary - no duplicates allowed
+                    # When user_id == sender_id then only second message will be send
+                    sender_id : utils.response_text(user_gettext(sender_id, u"You're subscribed for the prayer request from user %(name)s", name=user_name)),
+                    user_id : utils.response_text(user_gettext(user_id, u"User %(name)s will be praying in your following request: %(desc)s", name=sender_name, desc=intent_description)),
+                }
+            elif event == PrayerEvent.DID_PRAY:
+                # Should confirmed prayer be deleted or just marked as confirmed and deleted separatelly
+                # by scheduled script ?
+                # It should be the same way as in CONFIRM_PRAY option
+                #db.session.delete(intent)
+                intent.confirmed = 1
+                return {
+                    # This is dictionary - no duplicates allowed
+                    # When user_id == sender_id then only second message will be send
+                    sender_id : utils.response_text(user_gettext(sender_id, u"User %(name)s has been notified that you've prayed for him/her. Thank you", name=user_name)),
+                    user_id : utils.response_text(user_gettext(user_id, u"User %(name)s has prayed in your request: %(desc)s", name=sender_name, desc=intent_description)),
+                }
+            elif event == PrayerEvent.ENSURE_PRAY:
+                # This is dictionary - no duplicates allowed
+                # When user_id == sender_id then only second message will be send
+                return {
+                    sender_id : utils.response_text(user_gettext(sender_id, u"User %(name)s has been ensured that you pray for him", name=user_name)),
+                    user_id : utils.response_text(user_gettext(user_id, u"User %(name)s wants to ensure you about his prayer in the following request: %(desc)s", name=sender_name, desc=intent_description)) ,
+                }
+            elif event == PrayerEvent.GIVE_UP:
+                intent.commiter_id = 0
+                return {
+                    sender_id : utils.response_text(user_gettext(sender_id, u"Thank you for your will of praying. User %(name)s won't be notified about you giving up.", name=user_name)),
+                }
+            elif event == PrayerEvent.DONT_CONFIRM_PRAY:
+                return {
+                    sender_id : utils.response_text(user_gettext(sender_id, u"Please pray. Someone is counting on You.\nI will aks You again tomorrow.")),
+                }
+        else:
             return {
-                sender_id : utils.response_text(user_gettext(sender_id, u"You're subscribed for the prayer request from user %(name)s", name=user_name)),
-                user_id : utils.response_text(user_gettext(user_id, u"User %(name)s will be praying in your following request: %(desc)s", name=sender_name, desc=intent_description)),
+                sender_id: utils.response_text(user_gettext(sender_id, u"There is such no prayer request")),
             }
-        elif event == PrayerEvent.DID_PRAY:
-            db.session.delete(intent)
-            return {
-                user_id : utils.response_text(user_gettext(user_id, u"User %(name)s has prayed in your request: %(desc)s", name=sender_name, desc=intent_description)),
-                sender_id : utils.response_text(user_gettext(sender_id, u"User %(name)s has been notified that you've prayed for him/her. Thank you", name=user_name)),
-            }
-        elif event == PrayerEvent.ENSURE_PRAY:
-            return {
-                user_id : utils.response_text(user_gettext(user_id, u"User %(name)s wants to ensure you about his prayer in the following request: %(desc)s", name=sender_name, desc=intent_description)),
-                sender_id : utils.response_text(user_gettext(sender_id, u"User %(name)s has been ensured that you pray for him", name=user_name)),
-            }
-        elif event == PrayerEvent.GIVE_UP:
-            intent.commiter_id = 0
-            return {
-                sender_id : utils.response_text(user_gettext(sender_id, u"Thank you for your will of praying. User %(name)s won't be notified about you giving up.", name=user_name)),
-            }
-        elif event == PrayerEvent.CONFIRM_PRAY:
-            intent.confirmed = 1
-            return {
-                sender_id : utils.response_text(user_gettext(sender_id, u"Thank you for your will of praying.")),
-            }
-        elif event == PrayerEvent.DONT_CONFIRM_PRAY:
-            return {
-                sender_id : utils.response_text(user_gettext(sender_id, u"Please pray. Someone is counting on You.\nI will aks You again tomorrow.")),
-            }
+
 
 def map_callback(callback):
     sender_id = callback[0]
@@ -241,96 +292,51 @@ def map_prayer(prayer):
         'image_url': user_utils.img_url(user_id)
     }
 
-def map_said_prayer(prayer):
-    user_id = prayer.user_id
-    return {
-        'title': user_utils.user_name(user_id),
-        'subtitle': prayer.description,
-        'buttons': [
-            {
-                'title': user_gettext(user_id, u"I've prayed"),
-                'payload': PrayerEvent.payload(PrayerEvent.DID_PRAY, prayer.id, user_id)
-            },
-            {
-                'title': user_gettext(user_id, u"Ensure about your prayer"),
-                'payload': PrayerEvent.payload(PrayerEvent.ENSURE_PRAY, prayer.id, user_id)
-            },
-            {
-                'title': user_gettext(user_id, u"Stop your prayer"),
-                'payload': PrayerEvent.payload(PrayerEvent.GIVE_UP, prayer.id, user_id)
-            },
-        ],
-        'image_url': user_utils.img_url(user_id)
-    }
-
-
 def map_said_prayer_multiple_bubbles(sender_id):
 
     elements = None
 
-    #for prayer in Intent.query.filter_by(commiter_id=sender_id).limit(displayed_prayers_limit).all():
-    prayer = Intent.query.filter_by(commiter_id=sender_id).limit(displayed_prayers_limit).first()
-    user_id = prayer.user_id
+    for prayer in Intent.query.filter_by(commiter_id=sender_id).limit(displayed_prayers_limit).all():
 
-    if elements:
-        elements.append( {
-                "title": user_utils.user_name(user_id),
-                "subtitle": prayer.description,
-                "image_url": user_utils.img_url(user_id),
-                "buttons": [
-                    {
-                        'title': user_gettext(user_id, u"I've prayed"),
-                        'payload': PrayerEvent.payload(PrayerEvent.DID_PRAY, prayer.id, user_id)
-                    },
-                    {
-                        'title': user_gettext(user_id, u"Ensure about your prayer"),
-                        'payload': PrayerEvent.payload(PrayerEvent.ENSURE_PRAY, prayer.id, user_id)
-                    },
-                    {
-                        'title': user_gettext(user_id, u"Stop your prayer"),
-                        'payload': PrayerEvent.payload(PrayerEvent.GIVE_UP, prayer.id, user_id)
-                    },
-                ]
-            } )
-    else:
-        elements = [ {
-            "title": user_utils.user_name(user_id),
-            "subtitle": prayer.description,
-            "image_url": user_utils.img_url(user_id),
-            "buttons":[
-                {
-                    'title': user_gettext(user_id, u"I've prayed"),
-                    'payload': PrayerEvent.payload(PrayerEvent.DID_PRAY, prayer.id, user_id)
-                },
-                {
-                    'title': user_gettext(user_id, u"Ensure about your prayer"),
-                    'payload': PrayerEvent.payload(PrayerEvent.ENSURE_PRAY, prayer.id, user_id)
-                },
-                {
-                    'title': user_gettext(user_id, u"Stop your prayer"),
-                    'payload': PrayerEvent.payload(PrayerEvent.GIVE_UP, prayer.id, user_id)
-                },
-            ]
-          } ]
+        user_id = prayer.user_id
+        # some limit for checking images
+        # ConnectionError: HTTPSConnectionPool(host='graph.facebook.com', port=443):
+        # Max retries exceeded with url: /v2.8/me/thread_settings?access_token=xxx
+        # (Caused by NewConnectionError('<requests.packages.urllib3.connection.VerifiedHTTPSConnection object at 0x7fd377cb5350>:
+        # Failed to establish a new connection: [Errno -2] Name or service not known',))
 
-    return_element = {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "generic",
-                "elements": elements
-            }
-        }
-    }
+        single_buble_button = {
+                    "title": prayer.description,
+                    "subtitle": user_utils.user_name(user_id),
+                    "image_url": user_utils.img_url(user_id),
+                    "buttons": [
+                        {
+                            'type' : "postback",
+                            'title': user_gettext(user_id, u"I've prayed"),
+                            'payload': PrayerEvent.payload(PrayerEvent.DID_PRAY, prayer.id, user_id)
+                        },
+                        {
+                            'type': "postback",
+                            'title': user_gettext(user_id, u"Ensure about your prayer"),
+                            'payload': PrayerEvent.payload(PrayerEvent.ENSURE_PRAY, prayer.id, user_id)
+                        },
+                        {
+                            'type': "postback",
+                            'title': user_gettext(user_id, u"Stop your prayer"),
+                            'payload': PrayerEvent.payload(PrayerEvent.GIVE_UP, prayer.id, user_id)
+                        },
+                    ]
+                }
 
-    print( '*** elements ***')
-    print( elements )
-    print( '*** return_element ***' )
-    print( return_element )
+        if elements:
+            elements.append( single_buble_button )
+        else:
+            elements = [ single_buble_button ]
 
-    return json.dumps( return_element )
+    return elements
 
 
+# Facebook API samples
 #{
 #  "recipient":{
 #    "id":"USER_ID"
@@ -364,4 +370,26 @@ def map_said_prayer_multiple_bubbles(sender_id):
 #    }
 #  }
 #}'
+
+
+#curl -X POST -H "Content-Type: application/json" -d '{
+#  "recipient":{
+#    "id":"USER_ID"
+#  },
+#  "message":{
+#    "text":"Pick a color:",
+#    "quick_replies":[
+#      {
+#        "content_type":"text",
+#        "title":"Red",
+#        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+#      },
+#      {
+#        "content_type":"text",
+#        "title":"Green",
+#        "payload":"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+#      }
+#    ]
+#  }
+#}' "https://graph.facebook.com/v2.6/me/messages?access_token=PAGE_ACCESS_TOKEN"
 

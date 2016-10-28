@@ -101,7 +101,7 @@ msgstr "Użytkownik %(name)s pomodlił się w Twojej intencji: %(desc)s"
 #, python-format
 msgid "User %(name)s has been notified that you've prayed for him/her. Thank you"
 msgstr ""
-"Użytkownik %(name)s został powiadomiony o tym, że pomodliłeś się za "
+"Użytkownik %(name)s został powiadomiony o Twojej modlitwie za "
 "niego. Dziękujemy"
 
 #: prayer.py:166
@@ -158,7 +158,7 @@ msgid "Did You pray in below request ?\n%(value)s"
 msgstr "Czy pomodliłeś się w poniższej intencji ?\n%(value)s"
 
 msgid "Thank you for your will of praying."
-msgstr "Dziekujemy Ci za Twoją modlitwę."
+msgstr "Dziękujemy Ci za Twoją modlitwę."
 
 msgid "Please pray. Someone is counting on You.\nI will aks You again tomorrow."
 msgstr "Pomódl się proszę. Ktoś liczy na Ciebie.\nZapytam Cię ponownie jutro."
@@ -184,4 +184,12 @@ msgstr "Kilka Twoich ostatnich intencji:"
 msgid "You don't have any intentions"
 msgstr "Nie masz żadnych intencji"
 
+msgid "There is such no prayer request"
+msgstr "Nie ma takiej intencji"
 
+msgid "You reached maximum intentions count. Please back in few days."
+msgstr "Przekroczyłeś maksymalną liczbę intencji. Spróbuj proszę ponownie za klika dni."
+
+msgid "You reached maximum prayers count. Please pray in your already selected intentions first."
+msgstr "Przekroczyłeś maksymalną liczbę wybranych modlitw."
+" Pomódl się proszę najpierw w już wybranych przez Ciebie intencjach."

@@ -13,16 +13,10 @@ def confirm_praying_for_intention():
     query_prayers = Intent.query.filter( Intent.commiter_id > 0, Intent.confirmed == 0 ).all();
 
     for prayer in query_prayers:
-        if prayer.commiter_id == None or prayer.commiter_id == "":
-            print "NULL"
-            print prayer.commiter_id
-            print prayer.description
-        else:
-            print prayer.commiter_id
-            print prayer.description
+        if prayer.commiter_id != None and prayer.commiter_id != "":
             options = [ {
                         'title': user_gettext( prayer.commiter_id, u"Yes" ),
-                        'payload': PrayerEvent.payload(PrayerEvent.CONFIRM_PRAY, prayer.id, prayer.user_id)
+                        'payload': PrayerEvent.payload(PrayerEvent.DID_PRAY, prayer.id, prayer.user_id)
                         },
                         {
                         'title': user_gettext( prayer.commiter_id, u"No" ),
@@ -42,7 +36,7 @@ def confirm_praying_for_intention():
             api = FacebookApi();
             api.post("/me/messages", response);
 
-        print "\n";
+        #print "\n";
 
 if __name__ == '__main__':
     confirm_praying_for_intention()
