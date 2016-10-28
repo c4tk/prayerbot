@@ -4,3 +4,4 @@
 #git checkout master
 #git branch
 #git merge check_intentions
+#git branch -d check_intentions
