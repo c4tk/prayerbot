@@ -144,10 +144,15 @@ class PrayerWebhook(object):
         elif event == UserEvent.DELETE_INTENTION:
             prayer_id = payload['prayer_id']
             intent = Intent.query.filter_by(id = prayer_id).first()
-            db.session.delete(intent)
-            return {
-                sender_id : utils.response_text(user_gettext(sender_id, u"I've deleted a prayer request")),
-            }
+            if intent:
+                db.session.delete(intent)
+                return {
+                    sender_id : utils.response_text(user_gettext(sender_id, u"I've deleted a prayer request")),
+                }
+            else:
+                return {
+                    sender_id: utils.response_text(user_gettext(sender_id, u"There is no such prayer request")),
+                }
         elif event == UserEvent.PRAY_FOR_ME:
             # check how many intention user already provided
             int_cnt = Intent.query.filter(Intent.user_id == sender_id).count()
@@ -199,12 +204,26 @@ class PrayerWebhook(object):
         elif event == UserEvent.MY_INTENTIONS:
 
             all_intentions = []
+            options_set = []
 
             for intention in Intent.query.filter_by(user_id=sender_id)[0:displayed_intentions_limit]:
-                if all_intentions == []:
-                    all_intentions = intention.description + "\n"
+                button = [
+                        {
+                            'title': user_gettext(sender_id, u"Delete"),
+                            'payload': UserEvent.payload(UserEvent.DELETE_INTENTION, {'prayer_id': intention.id})
+                        },
+                    ]
+                if options_set:
+                    options_set.append( button )
                 else:
-                    all_intentions = all_intentions + intention.description + "\n"
+                    options_set = [ button ]
+
+                if all_intentions:
+                    all_intentions.append( intention.description )
+                else:
+                    all_intentions = [ intention.description  ]
+
+                response_message = utils.response_multiple_bubles_buttons(all_intentions, options_set)
 
             if all_intentions == []:
                 return {
@@ -212,8 +231,7 @@ class PrayerWebhook(object):
                 }
             else:
                 return {
-                    sender_id : utils.response_text( user_gettext( sender_id, u"Your last few intentions:" ) + "\n"
-                                                     + all_intentions ),
+                    sender_id : response_message
                 }
 
     @staticmethod
@@ -266,7 +284,7 @@ class PrayerWebhook(object):
                 }
         else:
             return {
-                sender_id: utils.response_text(user_gettext(sender_id, u"There is such no prayer request")),
+                sender_id: utils.response_text(user_gettext(sender_id, u"There is no such prayer request")),
             }
 
 

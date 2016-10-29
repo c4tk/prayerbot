@@ -184,7 +184,7 @@ msgstr "Kilka Twoich ostatnich intencji:"
 msgid "You don't have any intentions"
 msgstr "Nie masz żadnych intencji"
 
-msgid "There is such no prayer request"
+msgid "There is no such prayer request"
 msgstr "Nie ma takiej intencji"
 
 msgid "You reached maximum intentions count. Please back in few days."
@@ -193,3 +193,7 @@ msgstr "Przekroczyłeś maksymalną liczbę intencji. Spróbuj proszę ponownie 
 msgid "You reached maximum prayers count. Please pray in your already selected intentions first."
 msgstr "Przekroczyłeś maksymalną liczbę wybranych modlitw."
 " Pomódl się proszę najpierw w już wybranych przez Ciebie intencjach."
+
+msgid "Delete"
+msgstr "Usuń"
+
