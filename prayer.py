@@ -207,16 +207,22 @@ class PrayerWebhook(object):
             options_set = []
 
             for intention in Intent.query.filter_by(user_id=sender_id)[0:displayed_intentions_limit]:
-                button = [
+                buttons = [
                         {
                             'title': user_gettext(sender_id, u"Delete"),
                             'payload': UserEvent.payload(UserEvent.DELETE_INTENTION, {'prayer_id': intention.id})
                         },
                     ]
+                if intention.commiter_id > 0:
+                    buttons.append( {
+                            'title': user_gettext(sender_id, u"Send thank you"),
+                            'payload': UserEvent.payload(UserEvent.THANK_FOR_PRAYER, {'prayer_id': intention.id})
+                        },
+                    )
                 if options_set:
-                    options_set.append( button )
+                    options_set.append( buttons )
                 else:
-                    options_set = [ button ]
+                    options_set = [ buttons ]
 
                 if all_intentions:
                     all_intentions.append( intention.description )
@@ -232,6 +238,23 @@ class PrayerWebhook(object):
             else:
                 return {
                     sender_id : response_message
+                }
+
+        elif event == UserEvent.THANK_FOR_PRAYER:
+            prayer_id = payload['prayer_id']
+            intent = Intent.query.filter_by(id = prayer_id).first()
+            if intent:
+                commiter_id = intent.commiter_id
+                prayer_desc = intent.description
+                user_name = user_utils.user_name(sender_id)
+                commiter_name = user_utils.user_name(commiter_id)
+                return {
+                    sender_id : utils.response_text(user_gettext(sender_id, u"User %(name)s will be notified about your thankfulness.", name=commiter_name)),
+                    commiter_id : utils.response_text(user_gettext(commiter_id, u"User %(name)s wants to thank you for your prayer in the following request: %(desc)s.", name=user_name, desc=prayer_desc)),
+                }
+            else:
+                return {
+                    sender_id: utils.response_text(user_gettext(sender_id, u"There is no such prayer request")),
                 }
 
     @staticmethod

@@ -197,3 +197,11 @@ msgstr "Przekroczyłeś maksymalną liczbę wybranych modlitw."
 msgid "Delete"
 msgstr "Usuń"
 
+msgid "User %(name)s will be notified about your thankfulness."
+msgstr "Użytkownik %(name)s zostanie poinformowany o Twojej wdzięczności."
+
+msgid "User %(name)s wants to thank you for your prayer in the following request: %(desc)s."
+msgstr "Użytkownik %(name)s chce Ci podziękować za Twoją modlitwę w intencji: %(desc)s."
+
+msgid "Send thank you"
+msgstr "Podziękuj"
