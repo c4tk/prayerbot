@@ -77,6 +77,8 @@ def create_app(sqlite_path='sqlite:///intent.db'):
     if os.environ.get('ACCESS_TOKEN'):
         utils.send_greeting_text_config()
 
+    db.create_all()
+    db.session.commit()
     db.session.autoflush = True
     db.session.autocommit = True
 

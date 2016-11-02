@@ -3,9 +3,19 @@
 
 from facebook import user_utils
 from flask_babel import force_locale, gettext
+from dbms.models import User
+from dbms.rdb import db
 
 def user_gettext(user_id, string, **variables):
     # TODO: user's locale should be saved in DB
-    locale = user_utils.locale(user_id)
+    # TODO: Done
+    user_pref = User.query.filter_by(user_id=user_id).first()
+    if user_pref:
+        locale = user_pref.locale
+    else:
+        locale = user_utils.locale(user_id)
+        user_pref = User(user_id, locale)
+        db.session.add(user_pref)
+
     with force_locale(locale):
         return gettext(string, **variables)

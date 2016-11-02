@@ -37,3 +37,18 @@ class BibleVerse(db.Model):
 
     def __repr__(self):
         return u"BibleVerse id:{}, text:{}, address:{}".format(self.id, self.text, self.address)
+
+class User(db.Model):
+    """ Model class for Users settings """
+
+    __tablename__ = "t_users"
+
+    user_id = db.Column(db.Integer, primary_key=True)
+    locale = db.Column(db.String, nullable=False)
+
+    def __init__(self, user_id, locale):
+        self.user_id = user_id
+        self.locale = locale
+
+    def __repr__(self):
+        return u"User user_id:{}, locale:{}".format(self.user_id, self.locale)
