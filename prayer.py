@@ -127,6 +127,7 @@ class PrayerWebhook(object):
             callbacks = PrayerWebhook.handle_prayer_event(sender_id, user_id, prayer_id, event, payload)
         # commit DB changes
         db.session.commit()
+        db.session.flush()
         response_callbacks = map(map_callback, callbacks.items())
 
         return response_callbacks
