@@ -29,9 +29,10 @@ class ModelView(sqla.ModelView):
 db = SQLAlchemy()
 
 def register_admin(admin, app):
-    from .models import Intent, BibleVerse
+    from .models import Intent, BibleVerse, User
     basic_auth = BasicAuth(app)
     ModelView.setup_basic_auth(basic_auth)
     admin.add_view(ModelView(Intent, db.session))
     admin.add_view(ModelView(BibleVerse, db.session))
+    admin.add_view(ModelView(User, db.session))
 

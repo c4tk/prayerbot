@@ -21,8 +21,8 @@ msgstr ""
 
 #: prayer.py:24
 #, python-format
-msgid "You requested a prayer for: %(value)s?"
-msgstr "Poprosiłeś o modlitwę w intencji: %(value)s?"
+msgid "You requested a prayer for: %(value)s ?"
+msgstr "Poprosiłeś o modlitwę w intencji: %(value)s ?"
 
 #: prayer.py:27
 msgid "Yes"
@@ -49,12 +49,12 @@ msgid "I want to pray"
 msgstr "Chcę się pomodlić"
 
 #: prayer.py:54
-msgid "Who do I pray for?"
-msgstr "Za kogo się modlę"
+msgid "Who do I pray for ?"
+msgstr "Za kogo się modlę ?"
 
 #: prayer.py:58
-msgid "Please choose what do you need?"
-msgstr "Proszę wybierz czego potrzebujesz?"
+msgid "Please choose what do you need ?"
+msgstr "Proszę wybierz czego potrzebujesz ?"
 
 #: prayer.py:73
 msgid ""
@@ -73,8 +73,8 @@ msgid "I've deleted a prayer request"
 msgstr "Usunąłem prośbę o modlitwę"
 
 #: prayer.py:122
-msgid "What is your prayer request?"
-msgstr "Jaka jest Twoja intencja?"
+msgid "What is your prayer request ?"
+msgstr "Jaka jest Twoja intencja ?"
 
 #: prayer.py:136
 msgid "There're no prayer requests"
@@ -101,7 +101,7 @@ msgstr "Użytkownik %(name)s pomodlił się w Twojej intencji: %(desc)s"
 #, python-format
 msgid "User %(name)s has been notified that you've prayed for him/her. Thank you"
 msgstr ""
-"Użytkownik %(name)s został powiadomiony o tym, że pomodliłeś się za "
+"Użytkownik %(name)s został powiadomiony o Twojej modlitwie za "
 "niego. Dziękujemy"
 
 #: prayer.py:166
@@ -158,7 +158,7 @@ msgid "Did You pray in below request ?\n%(value)s"
 msgstr "Czy pomodliłeś się w poniższej intencji ?\n%(value)s"
 
 msgid "Thank you for your will of praying."
-msgstr "Dziekujemy Ci za Twoją modlitwę."
+msgstr "Dziękujemy Ci za Twoją modlitwę."
 
 msgid "Please pray. Someone is counting on You.\nI will aks You again tomorrow."
 msgstr "Pomódl się proszę. Ktoś liczy na Ciebie.\nZapytam Cię ponownie jutro."
@@ -169,4 +169,39 @@ msgstr "Nieznany"
 msgid "God is light; in him there is no darkness at all."
 msgstr "Bóg jest światłością, a nie ma w Nim żadnej ciemności."
 
+msgid "Maybe You can pray for someone ?"
+msgstr "Może się za kogoś pomodlisz ?"
 
+msgid "Or maybe You need a prayer ?"
+msgstr "A może Ty potrzebujesz modlitwy ?"
+
+msgid "My intentions"
+msgstr "Moje intencje"
+
+msgid "Your last few intentions:"
+msgstr "Kilka Twoich ostatnich intencji:"
+
+msgid "You don't have any intentions"
+msgstr "Nie masz żadnych intencji"
+
+msgid "There is no such prayer request"
+msgstr "Nie ma takiej intencji"
+
+msgid "You reached maximum intentions count. Please back in few days."
+msgstr "Przekroczyłeś maksymalną liczbę intencji. Spróbuj proszę ponownie za klika dni."
+
+msgid "You reached maximum prayers count. Please pray in your already selected intentions first."
+msgstr "Przekroczyłeś maksymalną liczbę wybranych modlitw."
+" Pomódl się proszę najpierw w już wybranych przez Ciebie intencjach."
+
+msgid "Delete"
+msgstr "Usuń"
+
+msgid "User %(name)s will be notified about your thankfulness."
+msgstr "Użytkownik %(name)s zostanie poinformowany o Twojej wdzięczności."
+
+msgid "User %(name)s wants to thank you for your prayer in the following request: %(desc)s."
+msgstr "Użytkownik %(name)s chce Ci podziękować za Twoją modlitwę w intencji: %(desc)s."
+
+msgid "Send thank you"
+msgstr "Podziękuj"
