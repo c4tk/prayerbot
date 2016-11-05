@@ -7,8 +7,6 @@ from dbms.models import User
 from dbms.rdb import db
 
 def user_gettext(user_id, string, **variables):
-    # TODO: user's locale should be saved in DB
-    # TODO: Done
     user_pref = User.query.filter_by(user_id=user_id).first()
     if user_pref:
         locale = user_pref.locale
