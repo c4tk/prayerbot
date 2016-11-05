@@ -87,8 +87,8 @@ class PrayerWebhook(object):
                     }
                 )
 
-            text_list = [ user_gettext(sender_id, u"Maybe You can pray for someone ?") ]
-            text_list.append( user_gettext(sender_id, u"Or maybe You need a prayer ?") )
+            text_list = [ user_gettext(sender_id, u"Maybe you can pray for someone ?") ]
+            text_list.append( user_gettext(sender_id, u"Or maybe you need a prayer ?") )
 
             options_set = [ options1 ]
             options_set.append( options2 )
@@ -167,7 +167,7 @@ class PrayerWebhook(object):
                 }
             else:
                 return {
-                    sender_id : utils.response_text(user_gettext(sender_id, u"You reached maximum intentions count. Please back in few days.")),
+                    sender_id : utils.response_text(user_gettext(sender_id, u"You've reached maximum intentions count. Please come back in few days.")),
                 }
         elif event == UserEvent.WANT_TO_PRAY:
 
@@ -188,7 +188,7 @@ class PrayerWebhook(object):
                     }
             else:
                 return {
-                    sender_id : utils.response_text(user_gettext(sender_id, u"You reached maximum prayers count. Please pray in your already selected intentions first.")),
+                    sender_id : utils.response_text(user_gettext(sender_id, u"You've reached maximum prayers count. Please pray in your already selected intentions first.")),
                 }
         elif event == UserEvent.MY_PRAYERS:
 
@@ -304,7 +304,7 @@ class PrayerWebhook(object):
                 }
             elif event == PrayerEvent.DONT_CONFIRM_PRAY:
                 return {
-                    sender_id : utils.response_text(user_gettext(sender_id, u"Please pray. Someone is counting on You.\nI will aks You again tomorrow.")),
+                    sender_id : utils.response_text(user_gettext(sender_id, u"Please pray. Someone is counting on you.\nI will ask you again tomorrow.")),
                 }
         else:
             return {

@@ -154,13 +154,13 @@ msgid ""
 " verse for you."
 msgstr ", Bóg błogosławi! Wpisz 'modlitwa', aby zobaczyć opcje, albo 'Biblia', aby otrzymać fragment z Pisma!"
 
-msgid "Did You pray in below request ?\n%(value)s"
+msgid "Did you pray in below request ?\n%(value)s"
 msgstr "Czy pomodliłeś się w poniższej intencji ?\n%(value)s"
 
 msgid "Thank you for your will of praying."
 msgstr "Dziękujemy Ci za Twoją modlitwę."
 
-msgid "Please pray. Someone is counting on You.\nI will aks You again tomorrow."
+msgid "Please pray. Someone is counting on you.\nI will ask you again tomorrow."
 msgstr "Pomódl się proszę. Ktoś liczy na Ciebie.\nZapytam Cię ponownie jutro."
 
 msgid "Unknown"
@@ -169,10 +169,10 @@ msgstr "Nieznany"
 msgid "God is light; in him there is no darkness at all."
 msgstr "Bóg jest światłością, a nie ma w Nim żadnej ciemności."
 
-msgid "Maybe You can pray for someone ?"
+msgid "Maybe you can pray for someone ?"
 msgstr "Może się za kogoś pomodlisz ?"
 
-msgid "Or maybe You need a prayer ?"
+msgid "Or maybe you need a prayer ?"
 msgstr "A może Ty potrzebujesz modlitwy ?"
 
 msgid "My intentions"
@@ -187,10 +187,10 @@ msgstr "Nie masz żadnych intencji"
 msgid "There is no such prayer request"
 msgstr "Nie ma takiej intencji"
 
-msgid "You reached maximum intentions count. Please back in few days."
-msgstr "Przekroczyłeś maksymalną liczbę intencji. Spróbuj proszę ponownie za klika dni."
+msgid "You've reached maximum intentions count. Please come back in few days."
+msgstr "Przekroczyłeś maksymalną liczbę intencji. Spróbuj proszę ponownie za kilka dni."
 
-msgid "You reached maximum prayers count. Please pray in your already selected intentions first."
+msgid "You've reached maximum prayers count. Please pray in your already selected intentions first."
 msgstr "Przekroczyłeś maksymalną liczbę wybranych modlitw."
 " Pomódl się proszę najpierw w już wybranych przez Ciebie intencjach."
 
