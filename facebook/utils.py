@@ -30,13 +30,13 @@ def response_buttons(text, buttons):
         }
     })
 
-def quik_buttons(text, buttons):
+def quick_buttons(text, buttons):
     return json.dumps({
         "text": text,
         "quick_replies": buttons
       })
 
-def response_multiple_bubles_buttons(texts_list, buttons_set ):
+def response_multiple_bubbles_buttons(texts_list, buttons_set ):
     elements = []
     for i in range(0, len(texts_list)):
         postback_button = map(_update_button_type, buttons_set[i])

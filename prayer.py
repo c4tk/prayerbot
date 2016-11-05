@@ -39,7 +39,7 @@ class PrayerWebhook(object):
                 ]
             )
             # Quick replies buttons does not work in Web interface
-            #response_message = utils.quik_buttons(
+            #response_message = utils.quick_buttons(
             #    user_gettext(sender_id, u"You requested a prayer for: %(value)s ?", value=text),
             #    [
             #       {
@@ -93,7 +93,7 @@ class PrayerWebhook(object):
             options_set = [ options1 ]
             options_set.append( options2 )
 
-            response_message = utils.response_multiple_bubles_buttons( text_list, options_set )
+            response_message = utils.response_multiple_bubbles_buttons( text_list, options_set )
 
         elif lower_text in user_gettext(sender_id, u"bible"):
             bibleVerses = BibleVerse.query.all()
@@ -230,7 +230,7 @@ class PrayerWebhook(object):
                 else:
                     all_intentions = [ intention.description  ]
 
-                response_message = utils.response_multiple_bubles_buttons(all_intentions, options_set)
+                response_message = utils.response_multiple_bubbles_buttons(all_intentions, options_set)
 
             if all_intentions == []:
                 return {
@@ -347,7 +347,7 @@ def map_said_prayer_multiple_bubbles(sender_id):
         # (Caused by NewConnectionError('<requests.packages.urllib3.connection.VerifiedHTTPSConnection object at 0x7fd377cb5350>:
         # Failed to establish a new connection: [Errno -2] Name or service not known',))
 
-        single_buble_button = {
+        single_bubble_button = {
                     "title": prayer.description,
                     "subtitle": user_utils.user_name(user_id),
                     "image_url": user_utils.img_url(user_id),
@@ -371,9 +371,9 @@ def map_said_prayer_multiple_bubbles(sender_id):
                 }
 
         if elements:
-            elements.append( single_buble_button )
+            elements.append( single_bubble_button )
         else:
-            elements = [ single_buble_button ]
+            elements = [ single_bubble_button ]
 
     return elements
 
